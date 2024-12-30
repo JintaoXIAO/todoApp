@@ -1,26 +1,38 @@
 module Main where
 
-import Prelude
+
 
 import Effect (Effect)
 import Flame (Html, QuerySelector(..), Subscription)
 import Flame.Application.NoEffects as FAN
 import Flame.Html.Attribute as HA
 import Flame.Html.Element as HE
+import Prelude ((+), map, (==), otherwise, Unit, (<>), not, (/=))
+import Data.Array (length, filter)
 
+type Todo =
+  { description :: String
+  , completed :: Boolean
+  , id :: Int
+  }
 
 type Model =
-  { todoList :: Array String
+  { todoList :: Array Todo
   , newTodo :: String
   }
 
 data Msg
   = SetNewTodo String
   | AddNewTodo
+  | ToggleCompleted Int
+  | DeleteTodo Int
 
 init :: Model
 init =
-  { todoList: []
+  { todoList:
+    [ { id: 1, description: "Buy milk", completed: false }
+    , { id: 2, description: "Do laundry", completed: true }
+    ]
   , newTodo: ""
   }
 
@@ -30,7 +42,18 @@ update model msg =
     SetNewTodo newTodo -> model { newTodo = newTodo }
     AddNewTodo
       | model.newTodo == "" -> model
-      | otherwise -> model { todoList = model.todoList <> [model.newTodo], newTodo = "" }
+      | otherwise -> model { newTodo = "", todoList = model.todoList <> [{ id: generateNewTodoId model, description: model.newTodo, completed: false }] }
+    ToggleCompleted id -> model { todoList = map (\todo ->
+                                                      if todo.id == id
+                                                      then todo { completed = not todo.completed }
+                                                      else todo) model.todoList }
+    DeleteTodo id -> model { todoList = filter (\todo -> todo.id /= id) model.todoList }
+  where
+    generateNewTodoId :: Model -> Int
+    generateNewTodoId model =
+      case model.todoList of
+        [] -> 1
+        xs -> length xs + 1
 
 view :: Model -> Html Msg
 view model =
@@ -57,11 +80,32 @@ inputField model =
         ]
     ]
 
+viewTodo :: Todo -> Html Msg
+viewTodo todo =
+  HE.div [ HA.class' "box" ]
+    [ HE.div [ HA.class' "columns", HA.class' "is-mobile", HA.class' "is-vcentered" ]
+        [ HE.div [ HA.class' "column" ]
+            [ HE.p [ HA.class' "subtitle" ] [ HE.text todo.description ] ]
+        , HE.div [ HA.class' "column", HA.class' "is-narrow" ]
+            [ HE.div [ HA.class' "buttons"]
+                [ HE.button [ HA.class' "button"
+                            , HA.class' if todo.completed then "is-success" else ""
+                            , HA.onClick (ToggleCompleted todo.id)
+                            ] [ HE.i' [ HA.class' "fa", HA.class' "fa-check" ] ]
+                , HE.button [ HA.class' "button"
+                            , HA.class' "is-danger"
+                            , HA.onClick (DeleteTodo todo.id)
+                            ] [ HE.i' [ HA.class' "fa", HA.class' "fa-times" ] ]
+                ]
+            ]
+
+        ]
+    ]
+
 todoList :: Model -> Html Msg
 todoList model =
   HE.ul_ [
-    [ map (\todo -> HE.li [ HA.class' "box", HA.class' "subtitle" ]
-                          [ HE.text todo ]) model.todoList  ]
+    [ map viewTodo model.todoList ]
   ]
 
 subscribe :: Array (Subscription Msg)
