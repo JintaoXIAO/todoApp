@@ -2,7 +2,7 @@ module Main
   ( main
   ) where
 
-import Data.Array (filter, head)
+import Data.Array (filter, head, find)
 import Data.Maybe (Maybe(..), fromJust)
 import Data.Tuple (Tuple(..))
 import Data.UUID.Random (UUIDv4, make)
@@ -13,7 +13,7 @@ import Flame.Application.Effectful as FAE
 import Flame.Html.Attribute as HA
 import Flame.Html.Element as HE
 import Partial.Unsafe (unsafePartial)
-import Prelude (class Eq, Unit, bind, identity, map, not, otherwise, pure, ($), (/=), (<>), (==), (>>>))
+import Prelude (class Eq, Unit, bind, identity, map, not, otherwise, pure, ($), (/=), (<>), (==), (>>>), (<<<))
 
 type Todo
   = { description :: String
@@ -30,7 +30,7 @@ type TodoBeingEdited
 type Model
   = { todoList :: Array Todo
     , newTodo :: String
-    , todoBeingEdited :: Maybe TodoBeingEdited
+    , todoBeingEdited :: Array TodoBeingEdited
     , filterType :: FilterType
     }
 
@@ -46,10 +46,10 @@ data Msg
   | AddNewTodo
   | ToggleCompleted UUIDv4
   | DeleteTodo UUIDv4
-  | CancelEdit
-  | ApplyEdit
+  | CancelEdit UUIDv4
+  | ApplyEdit UUIDv4
   | StartEdit UUIDv4
-  | SetEditDescription String
+  | SetEditDescription UUIDv4 String
   | SetFilter FilterType
 
 initGen :: Effect (Tuple Model (Maybe Msg))
@@ -63,7 +63,7 @@ initGen = do
             , { id: uuid02, description: "Do laundry", completed: true }
             ]
         , newTodo: ""
-        , todoBeingEdited: Nothing
+        , todoBeingEdited: []
         , filterType: All
         }
         Nothing
@@ -96,10 +96,12 @@ update { model, message } = case message of
                 model.todoList
             }
   DeleteTodo id -> pure $ \_ -> model { todoList = filter (\todo -> todo.id /= id) model.todoList }
-  CancelEdit -> pure $ \_ -> model { todoBeingEdited = Nothing }
-  ApplyEdit ->
+  CancelEdit id -> pure $ \_ -> model { todoBeingEdited = [] }
+  ApplyEdit id ->
     let
-      todoBeingEdited = (unsafePartial fromJust) model.todoBeingEdited
+      tbe = (unsafePartial fromJust) <<< head <<< filter (\todo -> todo.id == id) $ model.todoBeingEdited
+
+      newTbe = filter (\t -> t.id /= id) model.todoBeingEdited
     in
       pure
         $ \_ ->
@@ -107,13 +109,13 @@ update { model, message } = case message of
               { todoList =
                 map
                   ( \todo ->
-                      if todo.id == todoBeingEdited.id then
-                        todo { description = todoBeingEdited.description }
+                      if todo.id == tbe.id then
+                        todo { description = tbe.description }
                       else
                         todo
                   )
                   model.todoList
-              , todoBeingEdited = Nothing
+              , todoBeingEdited = newTbe
               }
   StartEdit id ->
     let
@@ -124,16 +126,18 @@ update { model, message } = case message of
           >>> unsafePartial fromJust
           $ model.todoList
     in
-      pure $ \_ -> model { todoBeingEdited = Just { id, description: desc, hasUpdate: false } }
-  SetEditDescription description ->
+      pure $ \_ -> model { todoBeingEdited = [ { id, description: desc, hasUpdate: false } ] <> model.todoBeingEdited }
+  SetEditDescription id description ->
     let
-      todoBeingEdited = (unsafePartial fromJust) model.todoBeingEdited
+      todoBeingEdited = (unsafePartial fromJust) <<< head <<< filter (\todo -> todo.id == id) $ model.todoBeingEdited
 
       originalTodo = filter (\todo -> todo.id == todoBeingEdited.id) >>> head >>> unsafePartial fromJust $ model.todoList
 
       changed = description /= originalTodo.description
+
+      newTodoBeingEdited = map (\t -> if t.id == id then t { description = description, hasUpdate = changed } else t) model.todoBeingEdited
     in
-      pure $ \_ -> model { todoBeingEdited = Just (todoBeingEdited { description = description, hasUpdate = changed }) }
+      pure $ \_ -> model { todoBeingEdited = newTodoBeingEdited }
   SetFilter ft -> pure $ \_ -> model { filterType = ft }
 
 view :: Model -> Html Msg
@@ -218,13 +222,13 @@ editTodo todo =
                 [ HA.class' "input"
                 , HA.class' "is-medium"
                 , HA.value todo.description
-                , HA.onInput SetEditDescription
+                , HA.onInput (SetEditDescription todo.id)
                 ]
             ]
         , HE.div [ HA.class' "control", HA.class' "buttons" ]
-            [ HE.button [ HA.class' "button", HA.class' "is-primary", HA.onClick ApplyEdit, HA.disabled (not todo.hasUpdate) ]
+            [ HE.button [ HA.class' "button", HA.class' "is-primary", HA.onClick (ApplyEdit todo.id), HA.disabled (not todo.hasUpdate) ]
                 [ HE.i' [ HA.class' "fa", HA.class' "fa-save" ] ]
-            , HE.button [ HA.class' "button", HA.class' "is-warning", HA.onClick CancelEdit ]
+            , HE.button [ HA.class' "button", HA.class' "is-warning", HA.onClick (CancelEdit todo.id) ]
                 [ HE.i' [ HA.class' "fa", HA.class' "fa-arrow-right" ] ]
             ]
         ]
@@ -234,9 +238,10 @@ viewTodoList :: Model -> Html Msg
 viewTodoList model =
   let
     renderTodo todo = case model.todoBeingEdited of
-      Just todoBeingEdited
-        | todo.id == todoBeingEdited.id -> editTodo todoBeingEdited
-      _ -> viewTodo todo
+      [] -> viewTodo todo
+      tbes -> case find (\tbe -> tbe.id == todo.id) tbes of
+        Just tbe -> editTodo tbe
+        Nothing -> viewTodo todo
 
     shouldRenderTodo todo = case model.filterType of
       All -> true
