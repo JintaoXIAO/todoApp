@@ -46,14 +46,14 @@
   // output/Data.Function/index.js
   var flip = function(f) {
     return function(b) {
-      return function(a3) {
-        return f(a3)(b);
+      return function(a2) {
+        return f(a2)(b);
       };
     };
   };
-  var $$const = function(a3) {
+  var $$const = function(a2) {
     return function(v) {
-      return a3;
+      return a2;
     };
   };
 
@@ -97,9 +97,9 @@
   var applySecond = function(dictApply) {
     var apply1 = apply(dictApply);
     var map8 = map(dictApply.Functor0());
-    return function(a3) {
+    return function(a2) {
       return function(b) {
-        return apply1(map8($$const(identity2))(a3))(b);
+        return apply1(map8($$const(identity2))(a2))(b);
       };
     };
   };
@@ -112,8 +112,8 @@
     var apply2 = apply(dictApplicative.Apply0());
     var pure1 = pure(dictApplicative);
     return function(f) {
-      return function(a3) {
-        return apply2(pure1(f))(a3);
+      return function(a2) {
+        return apply2(pure1(f))(a2);
       };
     };
   };
@@ -201,9 +201,9 @@
     var bind3 = bind(dictMonad.Bind1());
     var pure4 = pure(dictMonad.Applicative0());
     return function(f) {
-      return function(a3) {
+      return function(a2) {
         return bind3(f)(function(f$prime) {
-          return bind3(a3)(function(a$prime) {
+          return bind3(a2)(function(a$prime) {
             return pure4(f$prime(a$prime));
           });
         });
@@ -456,8 +456,8 @@
       };
     }
   };
-  var fromMaybe = function(a3) {
-    return maybe(a3)(identity3);
+  var fromMaybe = function(a2) {
+    return maybe(a2)(identity3);
   };
   var fromJust = function() {
     return function(v) {
@@ -553,15 +553,15 @@
   };
 
   // output/Effect/foreign.js
-  var pureE = function(a3) {
+  var pureE = function(a2) {
     return function() {
-      return a3;
+      return a2;
     };
   };
-  var bindE = function(a3) {
+  var bindE = function(a2) {
     return function(f) {
       return function() {
-        return f(a3())();
+        return f(a2())();
       };
     };
   };
@@ -636,72 +636,6 @@
   // output/Effect.Ref/index.js
   var $$new = _new;
 
-  // output/Control.Monad.ST.Internal/foreign.js
-  var map_ = function(f) {
-    return function(a3) {
-      return function() {
-        return f(a3());
-      };
-    };
-  };
-  var pure_ = function(a3) {
-    return function() {
-      return a3;
-    };
-  };
-  var bind_ = function(a3) {
-    return function(f) {
-      return function() {
-        return f(a3())();
-      };
-    };
-  };
-
-  // output/Control.Monad.ST.Internal/index.js
-  var $runtime_lazy2 = function(name2, moduleName, init3) {
-    var state2 = 0;
-    var val;
-    return function(lineNumber) {
-      if (state2 === 2) return val;
-      if (state2 === 1) throw new ReferenceError(name2 + " was needed before it finished initializing (module " + moduleName + ", line " + lineNumber + ")", moduleName, lineNumber);
-      state2 = 1;
-      val = init3();
-      state2 = 2;
-      return val;
-    };
-  };
-  var functorST = {
-    map: map_
-  };
-  var monadST = {
-    Applicative0: function() {
-      return applicativeST;
-    },
-    Bind1: function() {
-      return bindST;
-    }
-  };
-  var bindST = {
-    bind: bind_,
-    Apply0: function() {
-      return $lazy_applyST(0);
-    }
-  };
-  var applicativeST = {
-    pure: pure_,
-    Apply0: function() {
-      return $lazy_applyST(0);
-    }
-  };
-  var $lazy_applyST = /* @__PURE__ */ $runtime_lazy2("applyST", "Control.Monad.ST.Internal", function() {
-    return {
-      apply: ap(monadST),
-      Functor0: function() {
-        return functorST;
-      }
-    };
-  });
-
   // output/Data.HeytingAlgebra/foreign.js
   var boolConj = function(b1) {
     return function(b2) {
@@ -727,9 +661,9 @@
   var heytingAlgebraBoolean = {
     ff: false,
     tt: true,
-    implies: function(a3) {
+    implies: function(a2) {
       return function(b) {
-        return disj(heytingAlgebraBoolean)(not(heytingAlgebraBoolean)(a3))(b);
+        return disj(heytingAlgebraBoolean)(not(heytingAlgebraBoolean)(a2))(b);
       };
     },
     conj: boolConj,
@@ -823,27 +757,27 @@
 
   // output/Data.Function.Uncurried/foreign.js
   var runFn2 = function(fn) {
-    return function(a3) {
+    return function(a2) {
       return function(b) {
-        return fn(a3, b);
+        return fn(a2, b);
       };
     };
   };
   var runFn3 = function(fn) {
-    return function(a3) {
+    return function(a2) {
       return function(b) {
         return function(c) {
-          return fn(a3, b, c);
+          return fn(a2, b, c);
         };
       };
     };
   };
   var runFn4 = function(fn) {
-    return function(a3) {
+    return function(a2) {
       return function(b) {
         return function(c) {
           return function(d) {
-            return fn(a3, b, c, d);
+            return fn(a2, b, c, d);
           };
         };
       };
@@ -852,18 +786,18 @@
 
   // output/Data.Traversable/foreign.js
   var traverseArrayImpl = /* @__PURE__ */ function() {
-    function array1(a3) {
-      return [a3];
+    function array1(a2) {
+      return [a2];
     }
-    function array2(a3) {
+    function array2(a2) {
       return function(b) {
-        return [a3, b];
+        return [a2, b];
       };
     }
-    function array3(a3) {
+    function array3(a2) {
       return function(b) {
         return function(c) {
-          return [a3, b, c];
+          return [a2, b, c];
         };
       };
     }
@@ -937,8 +871,8 @@
   };
   var unsafeIndex1 = /* @__PURE__ */ unsafeIndex();
   var slice = /* @__PURE__ */ runFn3(sliceImpl);
-  var singleton2 = function(a3) {
-    return [a3];
+  var singleton2 = function(a2) {
+    return [a2];
   };
   var index = /* @__PURE__ */ function() {
     return runFn4(indexImpl)(Just.create)(Nothing.value);
@@ -2152,15 +2086,15 @@
     var Monad0 = dictMonadError.MonadThrow0().Monad0();
     var map8 = map(Monad0.Bind1().Apply0().Functor0());
     var pure4 = pure(Monad0.Applicative0());
-    return function(a3) {
-      return catchError1(map8(Right.create)(a3))(function($52) {
+    return function(a2) {
+      return catchError1(map8(Right.create)(a2))(function($52) {
         return pure4(Left.create($52));
       });
     };
   };
 
   // output/Effect.Aff/index.js
-  var $runtime_lazy3 = function(name2, moduleName, init3) {
+  var $runtime_lazy2 = function(name2, moduleName, init3) {
     var state2 = 0;
     var val;
     return function(lineNumber) {
@@ -2248,7 +2182,7 @@
       return $lazy_applyAff(0);
     }
   };
-  var $lazy_applyAff = /* @__PURE__ */ $runtime_lazy3("applyAff", "Effect.Aff", function() {
+  var $lazy_applyAff = /* @__PURE__ */ $runtime_lazy2("applyAff", "Effect.Aff", function() {
     return {
       apply: ap(monadAff),
       Functor0: function() {
@@ -2318,8 +2252,8 @@
   }
 
   // output/Data.Nullable/foreign.js
-  function nullable(a3, r, f) {
-    return a3 == null ? r : f(a3);
+  function nullable(a2, r, f) {
+    return a2 == null ? r : f(a2);
   }
 
   // output/Data.Nullable/index.js
@@ -2329,28 +2263,28 @@
 
   // output/Effect.Uncurried/foreign.js
   var runEffectFn1 = function runEffectFn12(fn) {
-    return function(a3) {
+    return function(a2) {
       return function() {
-        return fn(a3);
+        return fn(a2);
       };
     };
   };
   var runEffectFn2 = function runEffectFn22(fn) {
-    return function(a3) {
+    return function(a2) {
       return function(b) {
         return function() {
-          return fn(a3, b);
+          return fn(a2, b);
         };
       };
     };
   };
   var runEffectFn4 = function runEffectFn42(fn) {
-    return function(a3) {
+    return function(a2) {
       return function(b) {
         return function(c) {
           return function(d) {
             return function() {
-              return fn(a3, b, c, d);
+              return fn(a2, b, c, d);
             };
           };
         };
@@ -2370,7 +2304,6 @@
   var createCustomListener = /* @__PURE__ */ runEffectFn2(createCustomListener_);
 
   // output/Flame.Html.Attribute.Internal/foreign.js
-  var styleData = 1;
   var classData = 2;
   var propertyData = 3;
   function createProperty(name2) {
@@ -2380,9 +2313,6 @@
   }
   function createClass(array) {
     return [classData, array];
-  }
-  function createStyle(object) {
-    return [styleData, object];
   }
 
   // output/Data.String.CodePoints/foreign.js
@@ -2439,15 +2369,15 @@
   };
   var defaultSucc = function(toEnum$prime) {
     return function(fromEnum$prime) {
-      return function(a3) {
-        return toEnum$prime(fromEnum$prime(a3) + 1 | 0);
+      return function(a2) {
+        return toEnum$prime(fromEnum$prime(a2) + 1 | 0);
       };
     };
   };
   var defaultPred = function(toEnum$prime) {
     return function(fromEnum$prime) {
-      return function(a3) {
-        return toEnum$prime(fromEnum$prime(a3) - 1 | 0);
+      return function(a2) {
+        return toEnum$prime(fromEnum$prime(a2) - 1 | 0);
       };
     };
   };
@@ -2540,9 +2470,6 @@
   var singleton4 = /* @__PURE__ */ _singleton(singletonFallback);
 
   // output/Foreign.Object/foreign.js
-  function runST(f) {
-    return f();
-  }
   function toArrayWithKey(f) {
     return function(m) {
       var r = [];
@@ -2559,29 +2486,6 @@
       return k;
     };
   });
-
-  // output/Foreign.Object.ST/foreign.js
-  var newImpl = function() {
-    return {};
-  };
-  function poke2(k) {
-    return function(v) {
-      return function(m) {
-        return function() {
-          m[k] = v;
-          return m;
-        };
-      };
-    };
-  }
-
-  // output/Foreign.Object/index.js
-  var bindFlipped3 = /* @__PURE__ */ bindFlipped(bindST);
-  var singleton5 = function(k) {
-    return function(v) {
-      return runST(bindFlipped3(poke2(k)(v))(newImpl));
-    };
-  };
 
   // output/Flame.Html.Attribute.Internal/index.js
   var fromJust3 = /* @__PURE__ */ fromJust();
@@ -2606,11 +2510,6 @@
   var type$prime = /* @__PURE__ */ createProperty("type");
   var to = function(dict) {
     return dict.to;
-  };
-  var style1 = function(a3) {
-    return function(b) {
-      return createStyle(singleton5(a3)(b));
-    };
   };
   var placeholder = /* @__PURE__ */ createProperty("placeholder");
   var caseify = function(name$prime) {
@@ -2661,6 +2560,12 @@
     ;
     throw new Error("Failed pattern match at Flame.Html.Attribute.Internal (line 66, column 7 - line 68, column 23): " + [v.constructor.name]);
   };
+  var checked = /* @__PURE__ */ function() {
+    var $140 = createProperty("checked");
+    return function($141) {
+      return $140(booleanToFalsyString($141));
+    };
+  }();
   var disabled = /* @__PURE__ */ function() {
     var $148 = createProperty("disabled");
     return function($149) {
@@ -2671,7 +2576,7 @@
   // output/Flame.Html.Element/foreign.js
   var textNode = 1;
   var elementNode = 2;
-  var styleData2 = 1;
+  var styleData = 1;
   var classData2 = 2;
   var propertyData2 = 3;
   var attributeData = 4;
@@ -2692,23 +2597,6 @@
           children,
           text: text2
         };
-      };
-    };
-  }
-  function createDatalessElementNode(tag) {
-    return function(potentialChildren) {
-      let children = potentialChildren, text2 = void 0;
-      if (potentialChildren.length === 1 && potentialChildren[0].nodeType == textNode) {
-        children = void 0;
-        text2 = potentialChildren[0].text;
-      }
-      return {
-        nodeType: elementNode,
-        node: void 0,
-        tag,
-        nodeData: {},
-        children,
-        text: text2
       };
     };
   }
@@ -2735,7 +2623,7 @@
       for (let data of allData) {
         let dataOne = data[1];
         switch (data[0]) {
-          case styleData2:
+          case styleData:
             if (nodeData.styles === void 0)
               nodeData.styles = {};
             for (let key in dataOne)
@@ -2785,17 +2673,6 @@
       toNode: concatMap(toNode(dictToNode))
     };
   };
-  var createElement_ = function(tag) {
-    return function(dictToNode) {
-      var toNode1 = toNode(dictToNode);
-      return function(children) {
-        return createDatalessElementNode(tag)(toNode1(children));
-      };
-    };
-  };
-  var ul_ = function(dictToNode) {
-    return createElement_("ul")(dictToNode);
-  };
   var createElement$prime = function(tag) {
     return function(dictToNode) {
       var toNode1 = toNode(dictToNode);
@@ -2828,24 +2705,34 @@
       return createElement("div")(dictToNode)(dictToNode1);
     };
   };
+  var h1 = function(dictToNode) {
+    return function(dictToNode1) {
+      return createElement("h1")(dictToNode)(dictToNode1);
+    };
+  };
+  var label = function(dictToNode) {
+    return function(dictToNode1) {
+      return createElement("label")(dictToNode)(dictToNode1);
+    };
+  };
   var li = function(dictToNode) {
     return function(dictToNode1) {
       return createElement("li")(dictToNode)(dictToNode1);
     };
   };
-  var p = function(dictToNode) {
+  var span = function(dictToNode) {
     return function(dictToNode1) {
-      return createElement("p")(dictToNode)(dictToNode1);
+      return createElement("span")(dictToNode)(dictToNode1);
+    };
+  };
+  var ul = function(dictToNode) {
+    return function(dictToNode1) {
+      return createElement("ul")(dictToNode)(dictToNode1);
     };
   };
   var button = function(dictToNode) {
     return function(dictToNode1) {
       return createElement("button")(dictToNode)(dictToNode1);
-    };
-  };
-  var a = function(dictToNode) {
-    return function(dictToNode1) {
-      return createElement("a")(dictToNode)(dictToNode1);
     };
   };
 
@@ -3796,14 +3683,24 @@
   };
   var onClick = /* @__PURE__ */ createEvent("click");
 
+  // output/Htmls/index.js
+  var toClassListClasses = {
+    to: function(v) {
+      return v;
+    }
+  };
+
   // output/Main/index.js
   var toNodeArray2 = /* @__PURE__ */ toNodeArray(toNodeNodeDataNodeData);
   var toNodeArray1 = /* @__PURE__ */ toNodeArray(toNodeHtmlHtml);
-  var div4 = /* @__PURE__ */ div3(toNodeArray2)(toNodeArray1);
+  var li2 = /* @__PURE__ */ li(toNodeArray2)(toNodeArray1);
   var class$prime2 = /* @__PURE__ */ class$prime(toClassListString);
-  var p2 = /* @__PURE__ */ p(toNodeArray2)(toNodeArray1);
+  var div4 = /* @__PURE__ */ div3(toNodeArray2)(toNodeArray1);
+  var class$prime1 = /* @__PURE__ */ class$prime(toClassListClasses);
+  var input2 = /* @__PURE__ */ input(toNodeArray2);
   var button2 = /* @__PURE__ */ button(toNodeArray2)(toNodeArray1);
-  var i$prime2 = /* @__PURE__ */ i$prime(toNodeArray2);
+  var label2 = /* @__PURE__ */ label(toNodeArray2)(toNodeArray1);
+  var span4 = /* @__PURE__ */ span(toNodeArray2)(toNodeArray1);
   var pure3 = /* @__PURE__ */ pure(applicativeAff);
   var identity5 = /* @__PURE__ */ identity(categoryFn);
   var bind2 = /* @__PURE__ */ bind(bindAff);
@@ -3814,11 +3711,8 @@
   var eq12 = /* @__PURE__ */ eq(eqUUIDv4);
   var notEq2 = /* @__PURE__ */ notEq(eqUUIDv4);
   var fromJust4 = /* @__PURE__ */ fromJust();
-  var input2 = /* @__PURE__ */ input(toNodeArray2);
-  var ul_2 = /* @__PURE__ */ ul_(toNodeArray1);
-  var li2 = /* @__PURE__ */ li(toNodeArray2)(toNodeArray1);
-  var a2 = /* @__PURE__ */ a(toNodeArray2)(toNodeArray1);
-  var ul_1 = /* @__PURE__ */ ul_(/* @__PURE__ */ toNodeArray(toNodeArray1));
+  var i$prime2 = /* @__PURE__ */ i$prime(toNodeArray2);
+  var ul2 = /* @__PURE__ */ ul(toNodeArray2)(/* @__PURE__ */ toNodeArray(toNodeArray1));
   var All = /* @__PURE__ */ function() {
     function All2() {
     }
@@ -3931,13 +3825,7 @@
     return SetFilter2;
   }();
   var viewTodo = function(todo) {
-    return div4([class$prime2("box")])([div4([class$prime2("columns"), class$prime2("is-mobile"), class$prime2("is-vcentered")])([div4([class$prime2("column")])([p2([class$prime2("subtitle")])([text(todo.description)])]), div4([class$prime2("column"), class$prime2("is-narrow")])([div4([class$prime2("buttons")])([button2([class$prime2("button"), class$prime2(function() {
-      if (todo.completed) {
-        return "is-success";
-      }
-      ;
-      return "";
-    }()), onClick(new ToggleCompleted(todo.id))])([i$prime2([class$prime2("fa"), class$prime2("fa-check")])]), button2([class$prime2("button"), class$prime2("is-primary"), onClick(new StartEdit(todo.id))])([i$prime2([class$prime2("fa"), class$prime2("fa-edit")])]), button2([class$prime2("button"), class$prime2("is-danger"), onClick(new DeleteTodo(todo.id))])([i$prime2([class$prime2("fa"), class$prime2("fa-times")])])])])])]);
+    return li2([class$prime2("py-4")])([div4([class$prime1(["flex", "items-center"])])([input2([class$prime1(["h-4", "w-4", "text-teal-600", "focus:ring-teal-500", "border-gray-300", "rounded"]), type$prime("checkbox"), checked(todo.completed), onClick(new ToggleCompleted(todo.id))]), button2([class$prime1(["h-8", "w-8", "text-teal-600", "focus:ring-teal-500", "rounded"]), onClick(new DeleteTodo(todo.id))])([text("X")]), label2([class$prime1(["ml-3", "block", "text-gray-900"])])([span4([class$prime1(["text-lg", "font-medium"])])([text(todo.description)])])])]);
   };
   var update = function(v) {
     if (v.message instanceof SetNewTodo) {
@@ -3982,8 +3870,8 @@
           newTodo: v.model.newTodo,
           todoBeingEdited: v.model.todoBeingEdited,
           todoList: map7(function(todo) {
-            var $65 = eq12(todo.id)(v.message.value0);
-            if ($65) {
+            var $70 = eq12(todo.id)(v.message.value0);
+            if ($70) {
               return {
                 id: todo.id,
                 description: todo.description,
@@ -4033,8 +3921,8 @@
           filterType: v.model.filterType,
           newTodo: v.model.newTodo,
           todoList: map7(function(todo) {
-            var $69 = eq12(todo.id)(tbe.id);
-            if ($69) {
+            var $74 = eq12(todo.id)(tbe.id);
+            if ($74) {
               return {
                 id: todo.id,
                 completed: todo.completed,
@@ -4051,11 +3939,11 @@
     ;
     if (v.message instanceof StartEdit) {
       var desc = function() {
-        var $86 = map7(function(todo) {
+        var $91 = map7(function(todo) {
           return todo.description;
         });
-        return function($87) {
-          return fromJust4(head($86($87)));
+        return function($92) {
+          return fromJust4(head($91($92)));
         };
       }()(filter(function(todo) {
         return eq12(todo.id)(v.message.value0);
@@ -4078,15 +3966,15 @@
       var todoBeingEdited = fromJust4(head(filter(function(todo) {
         return eq12(todo.id)(v.message.value0);
       })(v.model.todoBeingEdited)));
-      var originalTodo = function($89) {
-        return fromJust4(head($89));
+      var originalTodo = function($94) {
+        return fromJust4(head($94));
       }(filter(function(todo) {
         return eq12(todo.id)(todoBeingEdited.id);
       })(v.model.todoList));
       var changed = v.message.value1 !== originalTodo.description;
       var newTodoBeingEdited = map7(function(t) {
-        var $72 = eq12(t.id)(v.message.value0);
-        if ($72) {
+        var $77 = eq12(t.id)(v.message.value0);
+        if ($77) {
           return {
             id: t.id,
             description: v.message.value1,
@@ -4117,11 +4005,11 @@
       });
     }
     ;
-    throw new Error("Failed pattern match at Main (line 72, column 29 - line 141, column 57): " + [v.message.constructor.name]);
+    throw new Error("Failed pattern match at Main (line 73, column 29 - line 142, column 57): " + [v.message.constructor.name]);
   };
   var subscribe = [];
   var inputField = function(model) {
-    return div4([class$prime2("field"), class$prime2("has-addons")])([div4([class$prime2("control"), class$prime2("is-expanded")])([input2([class$prime2("input"), class$prime2("is-medium"), type$prime("text"), placeholder("Add a new todo"), value(model.newTodo), onInput(SetNewTodo.create)])]), div4([class$prime2("control")])([button2([class$prime2("button"), class$prime2("is-primary"), class$prime2("is-medium"), onClick(AddNewTodo.value)])([i$prime2([class$prime2("fas"), class$prime2("fa-plus")])])])]);
+    return div4([class$prime1(["w-full", "max-w-sm", "mx-auto", "px-4", "py-2"])])([div4([class$prime1(["flex", "items-center", "border-b-2", "border-teal-500", "py-2"])])([input2([class$prime1(["appearance-none", "bg-transparent", "border-none", "w-full", "text-gray-700", "mr-3", "py-1", "px-2", "leading-tight", "focus:outline-none"]), type$prime("text"), placeholder("Add a new todo"), value(model.newTodo), onInput(SetNewTodo.create)]), button2([class$prime1(["flex-shrink-0", "bg-teal-500", "hover:bg-teal-700", "border-teal-500", "hover:border-teal-700", "text-sm", "border-4", "text-white", "py-1", "px-2", "rounded"]), onClick(AddNewTodo.value)])([text("Add")])])]);
   };
   var initGen = function __do() {
     var uuid01 = make2();
@@ -4140,37 +4028,6 @@
       todoBeingEdited: [],
       filterType: All.value
     }, Nothing.value);
-  };
-  var eqFilterType = {
-    eq: function(x) {
-      return function(y) {
-        if (x instanceof All && y instanceof All) {
-          return true;
-        }
-        ;
-        if (x instanceof Active && y instanceof Active) {
-          return true;
-        }
-        ;
-        if (x instanceof Completed && y instanceof Completed) {
-          return true;
-        }
-        ;
-        return false;
-      };
-    }
-  };
-  var eq22 = /* @__PURE__ */ eq(eqFilterType);
-  var filterTabs = function(model) {
-    var filterClass = function(ft) {
-      var $80 = eq22(model.filterType)(ft);
-      if ($80) {
-        return "is-active";
-      }
-      ;
-      return "";
-    };
-    return div4([class$prime2("tabs"), class$prime2("is-toggle"), class$prime2("is-fullwidth")])([ul_2([li2([class$prime2(filterClass(All.value))])([a2([onClick(new SetFilter(All.value))])([text("All")])]), li2([class$prime2(filterClass(Active.value))])([a2([onClick(new SetFilter(Active.value))])([text("Active")])]), li2([class$prime2(filterClass(Completed.value))])([a2([onClick(new SetFilter(Completed.value))])([text("Completed")])])])]);
   };
   var editTodo = function(todo) {
     return div4([class$prime2("box")])([div4([class$prime2("field"), class$prime2("is-grouped")])([div4([class$prime2("control"), class$prime2("is-expanded")])([input2([class$prime2("input"), class$prime2("is-medium"), value(todo.description), onInput(SetEditDescription.create(todo.id))])]), div4([class$prime2("control"), class$prime2("buttons")])([button2([class$prime2("button"), class$prime2("is-primary"), onClick(new ApplyEdit(todo.id)), disabled(!todo.hasUpdate)])([i$prime2([class$prime2("fa"), class$prime2("fa-save")])]), button2([class$prime2("button"), class$prime2("is-warning"), onClick(new CancelEdit(todo.id))])([i$prime2([class$prime2("fa"), class$prime2("fa-arrow-right")])])])])]);
@@ -4210,11 +4067,11 @@
       ;
       throw new Error("Failed pattern match at Main (line 242, column 15 - line 244, column 33): " + [v.constructor.name]);
     };
-    return ul_1([map7(renderTodo)(todos)]);
+    return ul2([class$prime1(["divide-y", "divide-gray-200", "px-4"])])([map7(renderTodo)(todos)]);
   };
-  var appTitle = /* @__PURE__ */ p2([/* @__PURE__ */ class$prime2("title")])([/* @__PURE__ */ text("Flame Todo List")]);
+  var appTitle = /* @__PURE__ */ div4([/* @__PURE__ */ class$prime1(["px-4", "py-2"])])([/* @__PURE__ */ h1(toNodeArray2)(toNodeArray1)([/* @__PURE__ */ class$prime1(["text-gray-800", "font-bold", "text-2xl", "uppercase"])])([/* @__PURE__ */ text("Flame Todo List")])]);
   var view = function(model) {
-    return div4([style1("padding")("20")])([appTitle, filterTabs(model), inputField(model), viewTodoList(model)]);
+    return div4([class$prime1(["max-w-md", "mx-auto", "bg-white", "shadow-lg", "rounded-lg", "overflow-hidden", "mt-16"])])([appTitle, inputField(model), viewTodoList(model)]);
   };
   var main = function __do2() {
     var init3 = initGen();

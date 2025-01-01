@@ -12,6 +12,7 @@ import Flame (Html, QuerySelector(..), Subscription)
 import Flame.Application.Effectful as FAE
 import Flame.Html.Attribute as HA
 import Flame.Html.Element as HE
+import Htmls (Classes(..))
 import Partial.Unsafe (unsafePartial)
 import Prelude (class Eq, Unit, bind, identity, map, not, otherwise, pure, ($), (/=), (<>), (==), (>>>), (<<<))
 
@@ -142,18 +143,20 @@ update { model, message } = case message of
 
 view :: Model -> Html Msg
 view model =
-  HE.div [ HA.style1 "padding" "20" ]
+  HE.div [ HA.class' $ Classes [ "max-w-md", "mx-auto", "bg-white", "shadow-lg", "rounded-lg", "overflow-hidden", "mt-16" ] ]
     [ appTitle
-    , filterTabs model
+    --    , filterTabs model
     , inputField model
     , viewTodoList model
     ]
 
 appTitle :: forall a. Html a
 appTitle =
-  HE.p
-    [ HA.class' "title" ]
-    [ HE.text "Flame Todo List" ]
+  HE.div
+    [ HA.class' $ Classes [ "px-4", "py-2" ] ]
+    [ HE.h1 [ HA.class' $ Classes [ "text-gray-800", "font-bold", "text-2xl", "uppercase" ] ]
+        [ HE.text "Flame Todo List" ]
+    ]
 
 filterTabs :: Model -> Html Msg
 filterTabs model =
@@ -173,43 +176,40 @@ filterTabs model =
 
 inputField :: Model -> Html Msg
 inputField model =
-  HE.div [ HA.class' "field", HA.class' "has-addons" ]
-    [ HE.div [ HA.class' "control", HA.class' "is-expanded" ]
-        [ HE.input [ HA.class' "input", HA.class' "is-medium", HA.type' "text", HA.placeholder "Add a new todo", HA.value model.newTodo, HA.onInput SetNewTodo ] ]
-    , HE.div [ HA.class' "control" ]
-        [ HE.button [ HA.class' "button", HA.class' "is-primary", HA.class' "is-medium", HA.onClick AddNewTodo ]
-            [ HE.i' [ HA.class' "fas", HA.class' "fa-plus" ] ]
+  HE.div [ HA.class' $ Classes [ "w-full", "max-w-sm", "mx-auto", "px-4", "py-2" ] ]
+    [ HE.div [ HA.class' $ Classes [ "flex", "items-center", "border-b-2", "border-teal-500", "py-2" ] ]
+        [ HE.input
+            [ HA.class' $ Classes [ "appearance-none", "bg-transparent", "border-none", "w-full", "text-gray-700", "mr-3", "py-1", "px-2", "leading-tight", "focus:outline-none" ]
+            , HA.type' "text"
+            , HA.placeholder "Add a new todo"
+            , HA.value model.newTodo
+            , HA.onInput SetNewTodo
+            ]
+        , HE.button
+            [ HA.class' $ Classes [ "flex-shrink-0", "bg-teal-500", "hover:bg-teal-700", "border-teal-500", "hover:border-teal-700", "text-sm", "border-4", "text-white", "py-1", "px-2", "rounded" ]
+            , HA.onClick AddNewTodo
+            ]
+            [ HE.text "Add" ]
         ]
     ]
 
 viewTodo :: Todo -> Html Msg
 viewTodo todo =
-  HE.div [ HA.class' "box" ]
-    [ HE.div [ HA.class' "columns", HA.class' "is-mobile", HA.class' "is-vcentered" ]
-        [ HE.div [ HA.class' "column" ]
-            [ HE.p [ HA.class' "subtitle" ] [ HE.text todo.description ] ]
-        , HE.div [ HA.class' "column", HA.class' "is-narrow" ]
-            [ HE.div [ HA.class' "buttons" ]
-                [ HE.button
-                    [ HA.class' "button"
-                    , HA.class' if todo.completed then "is-success" else ""
-                    , HA.onClick (ToggleCompleted todo.id)
-                    ]
-                    [ HE.i' [ HA.class' "fa", HA.class' "fa-check" ] ]
-                , HE.button
-                    [ HA.class' "button"
-                    , HA.class' "is-primary"
-                    , HA.onClick (StartEdit todo.id)
-                    ]
-                    [ HE.i' [ HA.class' "fa", HA.class' "fa-edit" ] ]
-                , HE.button
-                    [ HA.class' "button"
-                    , HA.class' "is-danger"
-                    , HA.onClick (DeleteTodo todo.id)
-                    ]
-                    [ HE.i' [ HA.class' "fa", HA.class' "fa-times" ] ]
-                ]
+  HE.li [ HA.class' "py-4" ]
+    [ HE.div [ HA.class' $ Classes [ "flex", "items-center" ] ]
+        [ HE.input
+            [ HA.class' $ Classes [ "h-4", "w-4", "text-teal-600", "focus:ring-teal-500", "border-gray-300", "rounded" ]
+            , HA.type' "checkbox"
+            , HA.checked todo.completed
+            , HA.onClick (ToggleCompleted todo.id)
             ]
+        , HE.button
+            [ HA.class' $ Classes [ "h-8", "w-8", "text-teal-600", "focus:ring-teal-500", "rounded" ]
+            , HA.onClick (DeleteTodo todo.id)
+            ]
+            [ HE.text "X" ]
+        , HE.label [ HA.class' $ Classes [ "ml-3", "block", "text-gray-900" ] ]
+            [ HE.span [ HA.class' $ Classes [ "text-lg", "font-medium" ] ] [ HE.text todo.description ] ]
         ]
     ]
 
@@ -250,7 +250,8 @@ viewTodoList model =
 
     todos = filter shouldRenderTodo model.todoList
   in
-    HE.ul_ [ map renderTodo todos ]
+    HE.ul [ HA.class' $ Classes [ "divide-y", "divide-gray-200", "px-4" ] ]
+      [ map renderTodo todos ]
 
 subscribe :: Array (Subscription Msg)
 subscribe = []
