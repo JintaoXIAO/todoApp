@@ -19,6 +19,9 @@
   var length = function(xs) {
     return xs.length;
   };
+  var indexImpl = function(just, nothing, xs, i) {
+    return i < 0 || i >= xs.length ? nothing : just(xs[i]);
+  };
   var filterImpl = function(f, xs) {
     return xs.filter(f);
   };
@@ -767,10 +770,30 @@
       };
     };
   };
+  var runFn4 = function(fn) {
+    return function(a) {
+      return function(b) {
+        return function(c) {
+          return function(d) {
+            return fn(a, b, c, d);
+          };
+        };
+      };
+    };
+  };
 
   // output/Data.Array/index.js
   var singleton2 = function(a) {
     return [a];
+  };
+  var $$null = function(xs) {
+    return length(xs) === 0;
+  };
+  var index = /* @__PURE__ */ function() {
+    return runFn4(indexImpl)(Just.create)(Nothing.value);
+  }();
+  var head = function(xs) {
+    return index(xs)(0);
   };
   var filter = /* @__PURE__ */ runFn2(filterImpl);
   var concatMap = /* @__PURE__ */ flip(/* @__PURE__ */ bind(bindArray));
@@ -1981,7 +2004,7 @@
   };
 
   // output/Data.String.Common/index.js
-  var $$null = function(s) {
+  var $$null2 = function(s) {
     return s === "";
   };
 
@@ -2268,7 +2291,7 @@
       var $46 = filter(function() {
         var $49 = not(heytingAlgebraBoolean);
         return function($50) {
-          return $49($$null($50));
+          return $49($$null2($50));
         };
       }());
       var $47 = split(" ");
@@ -3480,8 +3503,9 @@
   var i$prime2 = /* @__PURE__ */ i$prime(toNodeArray2);
   var append2 = /* @__PURE__ */ append(semigroupArray);
   var map5 = /* @__PURE__ */ map(functorArray);
-  var ul_2 = /* @__PURE__ */ ul_(/* @__PURE__ */ toNodeArray(/* @__PURE__ */ toNodeArray(toNodeArray1)));
+  var fromJust3 = /* @__PURE__ */ fromJust();
   var input2 = /* @__PURE__ */ input(toNodeArray2);
+  var ul_2 = /* @__PURE__ */ ul_(/* @__PURE__ */ toNodeArray(toNodeArray1));
   var SetNewTodo = /* @__PURE__ */ function() {
     function SetNewTodo2(value0) {
       this.value0 = value0;
@@ -3519,6 +3543,40 @@
     };
     return DeleteTodo2;
   }();
+  var CancelEdit = /* @__PURE__ */ function() {
+    function CancelEdit2() {
+    }
+    ;
+    CancelEdit2.value = new CancelEdit2();
+    return CancelEdit2;
+  }();
+  var ApplyEdit = /* @__PURE__ */ function() {
+    function ApplyEdit2() {
+    }
+    ;
+    ApplyEdit2.value = new ApplyEdit2();
+    return ApplyEdit2;
+  }();
+  var StartEdit = /* @__PURE__ */ function() {
+    function StartEdit2(value0) {
+      this.value0 = value0;
+    }
+    ;
+    StartEdit2.create = function(value0) {
+      return new StartEdit2(value0);
+    };
+    return StartEdit2;
+  }();
+  var SetEditDescription = /* @__PURE__ */ function() {
+    function SetEditDescription2(value0) {
+      this.value0 = value0;
+    }
+    ;
+    SetEditDescription2.create = function(value0) {
+      return new SetEditDescription2(value0);
+    };
+    return SetEditDescription2;
+  }();
   var viewTodo = function(todo) {
     return div4([class$prime2("box")])([div4([class$prime2("columns"), class$prime2("is-mobile"), class$prime2("is-vcentered")])([div4([class$prime2("column")])([p2([class$prime2("subtitle")])([text(todo.description)])]), div4([class$prime2("column"), class$prime2("is-narrow")])([div4([class$prime2("buttons")])([button2([class$prime2("button"), class$prime2(function() {
       if (todo.completed) {
@@ -3526,20 +3584,22 @@
       }
       ;
       return "";
-    }()), onClick(new ToggleCompleted(todo.id))])([i$prime2([class$prime2("fa"), class$prime2("fa-check")])]), button2([class$prime2("button"), class$prime2("is-danger"), onClick(new DeleteTodo(todo.id))])([i$prime2([class$prime2("fa"), class$prime2("fa-times")])])])])])]);
+    }()), onClick(new ToggleCompleted(todo.id))])([i$prime2([class$prime2("fa"), class$prime2("fa-check")])]), button2([class$prime2("button"), class$prime2("is-primary"), onClick(new StartEdit(todo.id))])([i$prime2([class$prime2("fa"), class$prime2("fa-edit")])]), button2([class$prime2("button"), class$prime2("is-danger"), onClick(new DeleteTodo(todo.id))])([i$prime2([class$prime2("fa"), class$prime2("fa-times")])])])])])]);
   };
   var update = function(model) {
     return function(msg) {
-      var generateNewTodoId = function(model1) {
-        if (model1.todoList.length === 0) {
+      var generateNewTodoId = function(_model) {
+        var $34 = $$null(_model.todoList);
+        if ($34) {
           return 1;
         }
         ;
-        return length(model1.todoList) + 1 | 0;
+        return length(_model.todoList) + 1 | 0;
       };
       if (msg instanceof SetNewTodo) {
         return {
           todoList: model.todoList,
+          todoBeingEdited: model.todoBeingEdited,
           newTodo: msg.value0
         };
       }
@@ -3551,6 +3611,7 @@
         ;
         if (otherwise) {
           return {
+            todoBeingEdited: model.todoBeingEdited,
             newTodo: "",
             todoList: append2(model.todoList)([{
               id: generateNewTodoId(model),
@@ -3565,9 +3626,10 @@
       if (msg instanceof ToggleCompleted) {
         return {
           newTodo: model.newTodo,
+          todoBeingEdited: model.todoBeingEdited,
           todoList: map5(function(todo) {
-            var $30 = todo.id === msg.value0;
-            if ($30) {
+            var $37 = todo.id === msg.value0;
+            if ($37) {
               return {
                 id: todo.id,
                 description: todo.description,
@@ -3583,33 +3645,108 @@
       if (msg instanceof DeleteTodo) {
         return {
           newTodo: model.newTodo,
+          todoBeingEdited: model.todoBeingEdited,
           todoList: filter(function(todo) {
             return todo.id !== msg.value0;
           })(model.todoList)
         };
       }
       ;
-      throw new Error("Failed pattern match at Main (line 41, column 3 - line 50, column 89): " + [msg.constructor.name]);
+      if (msg instanceof CancelEdit) {
+        return {
+          todoList: model.todoList,
+          newTodo: model.newTodo,
+          todoBeingEdited: Nothing.value
+        };
+      }
+      ;
+      if (msg instanceof ApplyEdit) {
+        var todoBeingEdited = fromJust3(model.todoBeingEdited);
+        return {
+          newTodo: model.newTodo,
+          todoList: map5(function(todo) {
+            var $40 = todo.id === todoBeingEdited.id;
+            if ($40) {
+              return {
+                id: todo.id,
+                completed: todo.completed,
+                description: todoBeingEdited.description
+              };
+            }
+            ;
+            return todo;
+          })(model.todoList),
+          todoBeingEdited: Nothing.value
+        };
+      }
+      ;
+      if (msg instanceof StartEdit) {
+        var desc = function() {
+          var $46 = map5(function(todo) {
+            return todo.description;
+          });
+          return function($47) {
+            return fromJust3(head($46($47)));
+          };
+        }()(filter(function(todo) {
+          return todo.id === msg.value0;
+        })(model.todoList));
+        return {
+          todoList: model.todoList,
+          newTodo: model.newTodo,
+          todoBeingEdited: new Just({
+            id: msg.value0,
+            description: desc
+          })
+        };
+      }
+      ;
+      if (msg instanceof SetEditDescription) {
+        var todoBeingEdited = fromJust3(model.todoBeingEdited);
+        return {
+          todoList: model.todoList,
+          newTodo: model.newTodo,
+          todoBeingEdited: new Just({
+            id: todoBeingEdited.id,
+            description: msg.value0
+          })
+        };
+      }
+      ;
+      throw new Error("Failed pattern match at Main (line 55, column 3 - line 88, column 87): " + [msg.constructor.name]);
     };
-  };
-  var todoList = function(model) {
-    return ul_2([[map5(viewTodo)(model.todoList)]]);
   };
   var subscribe = [];
   var inputField = function(model) {
     return div4([class$prime2("field"), class$prime2("has-addons")])([div4([class$prime2("control"), class$prime2("is-expanded")])([input2([class$prime2("input"), class$prime2("is-medium"), type$prime("text"), placeholder("Add a new todo"), value(model.newTodo), onInput(SetNewTodo.create)])]), div4([class$prime2("control")])([button2([class$prime2("button"), class$prime2("is-primary"), class$prime2("is-medium"), onClick(AddNewTodo.value)])([i$prime2([class$prime2("fas"), class$prime2("fa-plus")])])])]);
   };
-  var init3 = {
-    todoList: [{
-      id: 1,
-      description: "Buy milk",
-      completed: false
-    }, {
-      id: 2,
-      description: "Do laundry",
-      completed: true
-    }],
-    newTodo: ""
+  var init3 = /* @__PURE__ */ function() {
+    return {
+      todoList: [{
+        id: 1,
+        description: "Buy milk",
+        completed: false
+      }, {
+        id: 2,
+        description: "Do laundry",
+        completed: true
+      }],
+      newTodo: "",
+      todoBeingEdited: Nothing.value
+    };
+  }();
+  var editTodo = function(todo) {
+    return div4([class$prime2("box")])([div4([class$prime2("field"), class$prime2("is-grouped")])([div4([class$prime2("control"), class$prime2("is-expanded")])([input2([class$prime2("input"), class$prime2("is-medium"), value(todo.description), onInput(SetEditDescription.create)])]), div4([class$prime2("control"), class$prime2("buttons")])([button2([class$prime2("button"), class$prime2("is-primary"), onClick(ApplyEdit.value)])([i$prime2([class$prime2("fa"), class$prime2("fa-save")])]), button2([class$prime2("button"), class$prime2("is-warning"), onClick(CancelEdit.value)])([i$prime2([class$prime2("fa"), class$prime2("fa-arrow-right")])])])])]);
+  };
+  var todoList = function(model) {
+    var renderTodo = function(todo) {
+      if (model.todoBeingEdited instanceof Just && todo.id === model.todoBeingEdited.value0.id) {
+        return editTodo(model.todoBeingEdited.value0);
+      }
+      ;
+      return viewTodo(todo);
+    };
+    return ul_2([map5(renderTodo)(model.todoList)]);
   };
   var appTitle = /* @__PURE__ */ p2([/* @__PURE__ */ class$prime2("title")])([/* @__PURE__ */ text("Flame Todo List")]);
   var view = function(model) {
