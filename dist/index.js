@@ -46,14 +46,14 @@
   // output/Data.Function/index.js
   var flip = function(f) {
     return function(b) {
-      return function(a) {
-        return f(a)(b);
+      return function(a3) {
+        return f(a3)(b);
       };
     };
   };
-  var $$const = function(a) {
+  var $$const = function(a3) {
     return function(v) {
-      return a;
+      return a3;
     };
   };
 
@@ -97,9 +97,9 @@
   var applySecond = function(dictApply) {
     var apply1 = apply(dictApply);
     var map7 = map(dictApply.Functor0());
-    return function(a) {
+    return function(a3) {
       return function(b) {
-        return apply1(map7($$const(identity2))(a))(b);
+        return apply1(map7($$const(identity2))(a3))(b);
       };
     };
   };
@@ -112,8 +112,8 @@
     var apply2 = apply(dictApplicative.Apply0());
     var pure1 = pure(dictApplicative);
     return function(f) {
-      return function(a) {
-        return apply2(pure1(f))(a);
+      return function(a3) {
+        return apply2(pure1(f))(a3);
       };
     };
   };
@@ -192,9 +192,9 @@
     var bind3 = bind(dictMonad.Bind1());
     var pure4 = pure(dictMonad.Applicative0());
     return function(f) {
-      return function(a) {
+      return function(a3) {
         return bind3(f)(function(f$prime) {
-          return bind3(a)(function(a$prime) {
+          return bind3(a3)(function(a$prime) {
             return pure4(f$prime(a$prime));
           });
         });
@@ -447,8 +447,8 @@
       };
     }
   };
-  var fromMaybe = function(a) {
-    return maybe(a)(identity3);
+  var fromMaybe = function(a3) {
+    return maybe(a3)(identity3);
   };
   var fromJust = function() {
     return function(v) {
@@ -544,15 +544,15 @@
   };
 
   // output/Effect/foreign.js
-  var pureE = function(a) {
+  var pureE = function(a3) {
     return function() {
-      return a;
+      return a3;
     };
   };
-  var bindE = function(a) {
+  var bindE = function(a3) {
     return function(f) {
       return function() {
-        return f(a())();
+        return f(a3())();
       };
     };
   };
@@ -629,21 +629,21 @@
 
   // output/Control.Monad.ST.Internal/foreign.js
   var map_ = function(f) {
-    return function(a) {
+    return function(a3) {
       return function() {
-        return f(a());
+        return f(a3());
       };
     };
   };
-  var pure_ = function(a) {
+  var pure_ = function(a3) {
     return function() {
-      return a;
+      return a3;
     };
   };
-  var bind_ = function(a) {
+  var bind_ = function(a3) {
     return function(f) {
       return function() {
-        return f(a())();
+        return f(a3())();
       };
     };
   };
@@ -718,9 +718,9 @@
   var heytingAlgebraBoolean = {
     ff: false,
     tt: true,
-    implies: function(a) {
+    implies: function(a3) {
       return function(b) {
-        return disj(heytingAlgebraBoolean)(not(heytingAlgebraBoolean)(a))(b);
+        return disj(heytingAlgebraBoolean)(not(heytingAlgebraBoolean)(a3))(b);
       };
     },
     conj: boolConj,
@@ -814,27 +814,27 @@
 
   // output/Data.Function.Uncurried/foreign.js
   var runFn2 = function(fn) {
-    return function(a) {
+    return function(a3) {
       return function(b) {
-        return fn(a, b);
+        return fn(a3, b);
       };
     };
   };
   var runFn3 = function(fn) {
-    return function(a) {
+    return function(a3) {
       return function(b) {
         return function(c) {
-          return fn(a, b, c);
+          return fn(a3, b, c);
         };
       };
     };
   };
   var runFn4 = function(fn) {
-    return function(a) {
+    return function(a3) {
       return function(b) {
         return function(c) {
           return function(d) {
-            return fn(a, b, c, d);
+            return fn(a3, b, c, d);
           };
         };
       };
@@ -843,18 +843,18 @@
 
   // output/Data.Traversable/foreign.js
   var traverseArrayImpl = /* @__PURE__ */ function() {
-    function array1(a) {
-      return [a];
+    function array1(a3) {
+      return [a3];
     }
-    function array2(a) {
+    function array2(a3) {
       return function(b) {
-        return [a, b];
+        return [a3, b];
       };
     }
-    function array3(a) {
+    function array3(a3) {
       return function(b) {
         return function(c) {
-          return [a, b, c];
+          return [a3, b, c];
         };
       };
     }
@@ -923,8 +923,8 @@
 
   // output/Data.Array/index.js
   var slice = /* @__PURE__ */ runFn3(sliceImpl);
-  var singleton2 = function(a) {
-    return [a];
+  var singleton2 = function(a3) {
+    return [a3];
   };
   var index = /* @__PURE__ */ function() {
     return runFn4(indexImpl)(Just.create)(Nothing.value);
@@ -2130,8 +2130,8 @@
     var Monad0 = dictMonadError.MonadThrow0().Monad0();
     var map7 = map(Monad0.Bind1().Apply0().Functor0());
     var pure4 = pure(Monad0.Applicative0());
-    return function(a) {
-      return catchError1(map7(Right.create)(a))(function($52) {
+    return function(a3) {
+      return catchError1(map7(Right.create)(a3))(function($52) {
         return pure4(Left.create($52));
       });
     };
@@ -2296,8 +2296,8 @@
   }
 
   // output/Data.Nullable/foreign.js
-  function nullable(a, r, f) {
-    return a == null ? r : f(a);
+  function nullable(a3, r, f) {
+    return a3 == null ? r : f(a3);
   }
 
   // output/Data.Nullable/index.js
@@ -2307,28 +2307,28 @@
 
   // output/Effect.Uncurried/foreign.js
   var runEffectFn1 = function runEffectFn12(fn) {
-    return function(a) {
+    return function(a3) {
       return function() {
-        return fn(a);
+        return fn(a3);
       };
     };
   };
   var runEffectFn2 = function runEffectFn22(fn) {
-    return function(a) {
+    return function(a3) {
       return function(b) {
         return function() {
-          return fn(a, b);
+          return fn(a3, b);
         };
       };
     };
   };
   var runEffectFn4 = function runEffectFn42(fn) {
-    return function(a) {
+    return function(a3) {
       return function(b) {
         return function(c) {
           return function(d) {
             return function() {
-              return fn(a, b, c, d);
+              return fn(a3, b, c, d);
             };
           };
         };
@@ -2417,15 +2417,15 @@
   };
   var defaultSucc = function(toEnum$prime) {
     return function(fromEnum$prime) {
-      return function(a) {
-        return toEnum$prime(fromEnum$prime(a) + 1 | 0);
+      return function(a3) {
+        return toEnum$prime(fromEnum$prime(a3) + 1 | 0);
       };
     };
   };
   var defaultPred = function(toEnum$prime) {
     return function(fromEnum$prime) {
-      return function(a) {
-        return toEnum$prime(fromEnum$prime(a) - 1 | 0);
+      return function(a3) {
+        return toEnum$prime(fromEnum$prime(a3) - 1 | 0);
       };
     };
   };
@@ -2585,9 +2585,9 @@
   var to = function(dict) {
     return dict.to;
   };
-  var style1 = function(a) {
+  var style1 = function(a3) {
     return function(b) {
-      return createStyle(singleton5(a)(b));
+      return createStyle(singleton5(a3)(b));
     };
   };
   var placeholder = /* @__PURE__ */ createProperty("placeholder");
@@ -2789,6 +2789,11 @@
       return createElement("div")(dictToNode)(dictToNode1);
     };
   };
+  var li = function(dictToNode) {
+    return function(dictToNode1) {
+      return createElement("li")(dictToNode)(dictToNode1);
+    };
+  };
   var p = function(dictToNode) {
     return function(dictToNode1) {
       return createElement("p")(dictToNode)(dictToNode1);
@@ -2797,6 +2802,11 @@
   var button = function(dictToNode) {
     return function(dictToNode1) {
       return createElement("button")(dictToNode)(dictToNode1);
+    };
+  };
+  var a = function(dictToNode) {
+    return function(dictToNode1) {
+      return createElement("a")(dictToNode)(dictToNode1);
     };
   };
 
@@ -3755,18 +3765,42 @@
   var p2 = /* @__PURE__ */ p(toNodeArray2)(toNodeArray1);
   var button2 = /* @__PURE__ */ button(toNodeArray2)(toNodeArray1);
   var i$prime2 = /* @__PURE__ */ i$prime(toNodeArray2);
-  var make2 = /* @__PURE__ */ make(monadEffectEffect);
   var pure3 = /* @__PURE__ */ pure(applicativeAff);
   var identity5 = /* @__PURE__ */ identity(categoryFn);
   var bind2 = /* @__PURE__ */ bind(bindAff);
   var liftEffect4 = /* @__PURE__ */ liftEffect(monadEffectAff);
+  var make2 = /* @__PURE__ */ make(monadEffectEffect);
   var append2 = /* @__PURE__ */ append(semigroupArray);
   var map6 = /* @__PURE__ */ map(functorArray);
   var eq12 = /* @__PURE__ */ eq(eqUUIDv4);
   var notEq2 = /* @__PURE__ */ notEq(eqUUIDv4);
   var fromJust4 = /* @__PURE__ */ fromJust();
   var input2 = /* @__PURE__ */ input(toNodeArray2);
-  var ul_2 = /* @__PURE__ */ ul_(/* @__PURE__ */ toNodeArray(toNodeArray1));
+  var ul_2 = /* @__PURE__ */ ul_(toNodeArray1);
+  var li2 = /* @__PURE__ */ li(toNodeArray2)(toNodeArray1);
+  var a2 = /* @__PURE__ */ a(toNodeArray2)(toNodeArray1);
+  var ul_1 = /* @__PURE__ */ ul_(/* @__PURE__ */ toNodeArray(toNodeArray1));
+  var All = /* @__PURE__ */ function() {
+    function All2() {
+    }
+    ;
+    All2.value = new All2();
+    return All2;
+  }();
+  var Active = /* @__PURE__ */ function() {
+    function Active2() {
+    }
+    ;
+    Active2.value = new Active2();
+    return Active2;
+  }();
+  var Completed = /* @__PURE__ */ function() {
+    function Completed2() {
+    }
+    ;
+    Completed2.value = new Completed2();
+    return Completed2;
+  }();
   var SetNewTodo = /* @__PURE__ */ function() {
     function SetNewTodo2(value0) {
       this.value0 = value0;
@@ -3838,6 +3872,16 @@
     };
     return SetEditDescription2;
   }();
+  var SetFilter = /* @__PURE__ */ function() {
+    function SetFilter2(value0) {
+      this.value0 = value0;
+    }
+    ;
+    SetFilter2.create = function(value0) {
+      return new SetFilter2(value0);
+    };
+    return SetFilter2;
+  }();
   var viewTodo = function(todo) {
     return div4([class$prime2("box")])([div4([class$prime2("columns"), class$prime2("is-mobile"), class$prime2("is-vcentered")])([div4([class$prime2("column")])([p2([class$prime2("subtitle")])([text(todo.description)])]), div4([class$prime2("column"), class$prime2("is-narrow")])([div4([class$prime2("buttons")])([button2([class$prime2("button"), class$prime2(function() {
       if (todo.completed) {
@@ -3851,6 +3895,7 @@
     if (v.message instanceof SetNewTodo) {
       return pure3(function(v1) {
         return {
+          filterType: v.model.filterType,
           todoBeingEdited: v.model.todoBeingEdited,
           todoList: v.model.todoList,
           newTodo: v.message.value0
@@ -3867,6 +3912,7 @@
         return bind2(liftEffect4(make2))(function(newTodoId) {
           return pure3(function(v1) {
             return {
+              filterType: v.model.filterType,
               todoBeingEdited: v.model.todoBeingEdited,
               newTodo: "",
               todoList: append2(v.model.todoList)([{
@@ -3884,11 +3930,12 @@
     if (v.message instanceof ToggleCompleted) {
       return pure3(function(v1) {
         return {
+          filterType: v.model.filterType,
           newTodo: v.model.newTodo,
           todoBeingEdited: v.model.todoBeingEdited,
           todoList: map6(function(todo) {
-            var $52 = eq12(todo.id)(v.message.value0);
-            if ($52) {
+            var $62 = eq12(todo.id)(v.message.value0);
+            if ($62) {
               return {
                 id: todo.id,
                 description: todo.description,
@@ -3905,6 +3952,7 @@
     if (v.message instanceof DeleteTodo) {
       return pure3(function(v1) {
         return {
+          filterType: v.model.filterType,
           newTodo: v.model.newTodo,
           todoBeingEdited: v.model.todoBeingEdited,
           todoList: filter(function(todo) {
@@ -3917,6 +3965,7 @@
     if (v.message instanceof CancelEdit) {
       return pure3(function(v1) {
         return {
+          filterType: v.model.filterType,
           newTodo: v.model.newTodo,
           todoList: v.model.todoList,
           todoBeingEdited: Nothing.value
@@ -3928,10 +3977,11 @@
       var todoBeingEdited = fromJust4(v.model.todoBeingEdited);
       return pure3(function(v1) {
         return {
+          filterType: v.model.filterType,
           newTodo: v.model.newTodo,
           todoList: map6(function(todo) {
-            var $55 = eq12(todo.id)(todoBeingEdited.id);
-            if ($55) {
+            var $65 = eq12(todo.id)(todoBeingEdited.id);
+            if ($65) {
               return {
                 id: todo.id,
                 completed: todo.completed,
@@ -3948,17 +3998,18 @@
     ;
     if (v.message instanceof StartEdit) {
       var desc = function() {
-        var $63 = map6(function(todo) {
+        var $78 = map6(function(todo) {
           return todo.description;
         });
-        return function($64) {
-          return fromJust4(head($63($64)));
+        return function($79) {
+          return fromJust4(head($78($79)));
         };
       }()(filter(function(todo) {
         return eq12(todo.id)(v.message.value0);
       })(v.model.todoList));
       return pure3(function(v1) {
         return {
+          filterType: v.model.filterType,
           newTodo: v.model.newTodo,
           todoList: v.model.todoList,
           todoBeingEdited: new Just({
@@ -3973,6 +4024,7 @@
       var todoBeingEdited = fromJust4(v.model.todoBeingEdited);
       return pure3(function(v1) {
         return {
+          filterType: v.model.filterType,
           newTodo: v.model.newTodo,
           todoList: v.model.todoList,
           todoBeingEdited: new Just({
@@ -3983,7 +4035,18 @@
       });
     }
     ;
-    throw new Error("Failed pattern match at Main (line 67, column 3 - line 102, column 100): " + [v.message.constructor.name]);
+    if (v.message instanceof SetFilter) {
+      return pure3(function(v1) {
+        return {
+          newTodo: v.model.newTodo,
+          todoBeingEdited: v.model.todoBeingEdited,
+          todoList: v.model.todoList,
+          filterType: v.message.value0
+        };
+      });
+    }
+    ;
+    throw new Error("Failed pattern match at Main (line 73, column 29 - line 134, column 57): " + [v.message.constructor.name]);
   };
   var subscribe = [];
   var inputField = function(model) {
@@ -4003,13 +4066,61 @@
         completed: true
       }],
       newTodo: "",
-      todoBeingEdited: Nothing.value
+      todoBeingEdited: Nothing.value,
+      filterType: All.value
     }, Nothing.value);
+  };
+  var eqFilterType = {
+    eq: function(x) {
+      return function(y) {
+        if (x instanceof All && y instanceof All) {
+          return true;
+        }
+        ;
+        if (x instanceof Active && y instanceof Active) {
+          return true;
+        }
+        ;
+        if (x instanceof Completed && y instanceof Completed) {
+          return true;
+        }
+        ;
+        return false;
+      };
+    }
+  };
+  var eq22 = /* @__PURE__ */ eq(eqFilterType);
+  var filterTabs = function(model) {
+    var filterClass = function(ft) {
+      var $73 = eq22(model.filterType)(ft);
+      if ($73) {
+        return "is-active";
+      }
+      ;
+      return "";
+    };
+    return div4([class$prime2("tabs"), class$prime2("is-toggle"), class$prime2("is-fullwidth")])([ul_2([li2([class$prime2(filterClass(All.value))])([a2([onClick(new SetFilter(All.value))])([text("All")])]), li2([class$prime2(filterClass(Active.value))])([a2([onClick(new SetFilter(Active.value))])([text("Active")])]), li2([class$prime2(filterClass(Completed.value))])([a2([onClick(new SetFilter(Completed.value))])([text("Completed")])])])]);
   };
   var editTodo = function(todo) {
     return div4([class$prime2("box")])([div4([class$prime2("field"), class$prime2("is-grouped")])([div4([class$prime2("control"), class$prime2("is-expanded")])([input2([class$prime2("input"), class$prime2("is-medium"), value(todo.description), onInput(SetEditDescription.create)])]), div4([class$prime2("control"), class$prime2("buttons")])([button2([class$prime2("button"), class$prime2("is-primary"), onClick(ApplyEdit.value)])([i$prime2([class$prime2("fa"), class$prime2("fa-save")])]), button2([class$prime2("button"), class$prime2("is-warning"), onClick(CancelEdit.value)])([i$prime2([class$prime2("fa"), class$prime2("fa-arrow-right")])])])])]);
   };
-  var todoList = function(model) {
+  var viewTodoList = function(model) {
+    var shouldRenderTodo = function(todo) {
+      if (model.filterType instanceof All) {
+        return true;
+      }
+      ;
+      if (model.filterType instanceof Active) {
+        return !todo.completed;
+      }
+      ;
+      if (model.filterType instanceof Completed) {
+        return todo.completed;
+      }
+      ;
+      throw new Error("Failed pattern match at Main (line 238, column 29 - line 241, column 34): " + [model.filterType.constructor.name]);
+    };
+    var todos = filter(shouldRenderTodo)(model.todoList);
     var renderTodo = function(todo) {
       if (model.todoBeingEdited instanceof Just && eq12(todo.id)(model.todoBeingEdited.value0.id)) {
         return editTodo(model.todoBeingEdited.value0);
@@ -4017,11 +4128,11 @@
       ;
       return viewTodo(todo);
     };
-    return ul_2([map6(renderTodo)(model.todoList)]);
+    return ul_1([map6(renderTodo)(todos)]);
   };
   var appTitle = /* @__PURE__ */ p2([/* @__PURE__ */ class$prime2("title")])([/* @__PURE__ */ text("Flame Todo List")]);
   var view = function(model) {
-    return div4([style1("padding")("20")])([appTitle, inputField(model), todoList(model)]);
+    return div4([style1("padding")("20")])([appTitle, filterTabs(model), inputField(model), viewTodoList(model)]);
   };
   var main = function __do2() {
     var init3 = initGen();

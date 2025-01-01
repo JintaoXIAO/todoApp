@@ -21,7 +21,6 @@ to generate this file without the comments in this block.
   , "partial"
   , "prelude"
   , "tuples"
-  , "uuid"
   , "uuidv4"
   ]
 , packages = ../packages.dhall

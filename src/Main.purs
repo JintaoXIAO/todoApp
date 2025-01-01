@@ -1,13 +1,10 @@
 module Main
   ( main
-  )
-  where
+  ) where
 
-
-import Data.Array (filter, length, null, head)
+import Data.Array (filter, head, length, null)
 import Data.Maybe (Maybe(..), fromJust)
 import Data.Tuple (Tuple(..))
-
 import Data.UUID.Random (UUIDv4, make)
 import Effect (Effect)
 import Effect.Aff (Aff)
@@ -18,25 +15,32 @@ import Flame.Application.NoEffects as FAN
 import Flame.Html.Attribute as HA
 import Flame.Html.Element as HE
 import Partial.Unsafe (unsafePartial)
-import Prelude (Unit, identity, map, not, otherwise, pure, ($), (+), (/=), (<>), (==), (>>>), bind)
+import Prelude (class Eq, Unit, bind, const, identity, map, not, otherwise, pure, ($), (+), (/=), (<<<), (<>), (==), (>>>))
 
+type Todo
+  = { description :: String
+    , completed :: Boolean
+    , id :: UUIDv4
+    }
 
-type Todo =
-  { description :: String
-  , completed :: Boolean
-  , id :: UUIDv4
-  }
+type TodoBeingEdited
+  = { id :: UUIDv4
+    , description :: String
+    }
 
-type TodoBeingEdited =
-  { id :: UUIDv4
-  , description :: String
-  }
+type Model
+  = { todoList :: Array Todo
+    , newTodo :: String
+    , todoBeingEdited :: Maybe TodoBeingEdited
+    , filterType :: FilterType
+    }
 
-type Model =
-  { todoList :: Array Todo
-  , newTodo :: String
-  , todoBeingEdited :: Maybe TodoBeingEdited
-  }
+data FilterType
+  = All
+  | Active
+  | Completed
+
+derive instance eqFilterType :: Eq FilterType
 
 data Msg
   = SetNewTodo String
@@ -47,70 +51,95 @@ data Msg
   | ApplyEdit
   | StartEdit UUIDv4
   | SetEditDescription String
+  | SetFilter FilterType
 
 initGen :: Effect (Tuple Model (Maybe Msg))
 initGen = do
   uuid01 <- make
   uuid02 <- make
-  pure $ Tuple
-          { todoList:
+  pure
+    $ Tuple
+        { todoList:
             [ { id: uuid01, description: "Buy milk", completed: false }
             , { id: uuid02, description: "Do laundry", completed: true }
             ]
-          , newTodo: ""
-          , todoBeingEdited: Nothing
-          }
-          Nothing
+        , newTodo: ""
+        , todoBeingEdited: Nothing
+        , filterType: All
+        }
+        Nothing
 
 update :: FAE.AffUpdate Model Msg
-update { model, message } =
-  case message of
-    SetNewTodo newTodo -> pure $ \_ -> model { newTodo = newTodo }
-    AddNewTodo
-      | model.newTodo == "" -> pure identity
-      | otherwise -> do
-          newTodoId <- liftEffect generateNewTodoId
-          pure $ \_ ->
-            model { newTodo = ""
-                  , todoList = model.todoList <> [{ id: newTodoId, description: model.newTodo, completed: false }] }
-    ToggleCompleted id -> pure $ \_ -> model { todoList = map (\todo ->
-                                                      if todo.id == id
-                                                      then todo { completed = not todo.completed }
-                                                      else todo) model.todoList }
-    DeleteTodo id -> pure $ \_ -> model { todoList = filter (\todo -> todo.id /= id) model.todoList }
-    CancelEdit -> pure $ \_ -> model { todoBeingEdited = Nothing }
-    ApplyEdit ->
-      let todoBeingEdited = (unsafePartial fromJust) model.todoBeingEdited in
-      pure $ \_ -> model { todoList = map (\todo ->
-                                if todo.id == todoBeingEdited.id
-                                then todo { description = todoBeingEdited.description }
-                                else todo) model.todoList
-            , todoBeingEdited = Nothing
+update { model, message } = case message of
+  SetNewTodo newTodo -> pure $ \_ -> model { newTodo = newTodo }
+  AddNewTodo
+    | model.newTodo == "" -> pure identity
+    | otherwise -> do
+      newTodoId <- liftEffect make
+      pure
+        $ \_ ->
+            model
+              { newTodo = ""
+              , todoList = model.todoList <> [ { id: newTodoId, description: model.newTodo, completed: false } ]
+              }
+  ToggleCompleted id ->
+    pure
+      $ \_ ->
+          model
+            { todoList =
+              map
+                ( \todo ->
+                    if todo.id == id then
+                      todo { completed = not todo.completed }
+                    else
+                      todo
+                )
+                model.todoList
             }
-    StartEdit id ->
-      let desc = filter (\todo -> todo.id == id)
-                  >>> map (\todo -> todo.description)
-                  >>> head
-                  >>> unsafePartial fromJust
-                  $ model.todoList
-
-      in
+  DeleteTodo id -> pure $ \_ -> model { todoList = filter (\todo -> todo.id /= id) model.todoList }
+  CancelEdit -> pure $ \_ -> model { todoBeingEdited = Nothing }
+  ApplyEdit ->
+    let
+      todoBeingEdited = (unsafePartial fromJust) model.todoBeingEdited
+    in
+      pure
+        $ \_ ->
+            model
+              { todoList =
+                map
+                  ( \todo ->
+                      if todo.id == todoBeingEdited.id then
+                        todo { description = todoBeingEdited.description }
+                      else
+                        todo
+                  )
+                  model.todoList
+              , todoBeingEdited = Nothing
+              }
+  StartEdit id ->
+    let
+      desc =
+        filter (\todo -> todo.id == id)
+          >>> map (\todo -> todo.description)
+          >>> head
+          >>> unsafePartial fromJust
+          $ model.todoList
+    in
       pure $ \_ -> model { todoBeingEdited = Just { id, description: desc } }
-    SetEditDescription description ->
-      let todoBeingEdited = (unsafePartial fromJust) model.todoBeingEdited
-      in
+  SetEditDescription description ->
+    let
+      todoBeingEdited = (unsafePartial fromJust) model.todoBeingEdited
+    in
       pure $ \_ -> model { todoBeingEdited = Just (todoBeingEdited { description = description }) }
-
-  where
-    generateNewTodoId :: Effect UUIDv4
-    generateNewTodoId = make
+  SetFilter ft -> pure $ \_ -> model { filterType = ft }
 
 view :: Model -> Html Msg
 view model =
-  HE.div [ HA.style1 "padding" "20"]
+  HE.div [ HA.style1 "padding" "20" ]
     [ appTitle
+    , filterTabs model
     , inputField model
-    , todoList model
+    , viewTodoList model
     ]
 
 appTitle :: forall a. Html a
@@ -119,11 +148,27 @@ appTitle =
     [ HA.class' "title" ]
     [ HE.text "Flame Todo List" ]
 
+filterTabs :: Model -> Html Msg
+filterTabs model =
+  let
+    filterClass ft = if model.filterType == ft then "is-active" else ""
+  in
+    HE.div [ HA.class' "tabs", HA.class' "is-toggle", HA.class' "is-fullwidth" ]
+      [ HE.ul_
+          [ HE.li [ HA.class' (filterClass All) ]
+              [ HE.a [ HA.onClick (SetFilter All) ] [ HE.text "All" ] ]
+          , HE.li [ HA.class' (filterClass Active) ]
+              [ HE.a [ HA.onClick (SetFilter Active) ] [ HE.text "Active" ] ]
+          , HE.li [ HA.class' (filterClass Completed) ]
+              [ HE.a [ HA.onClick (SetFilter Completed) ] [ HE.text "Completed" ] ]
+          ]
+      ]
+
 inputField :: Model -> Html Msg
 inputField model =
   HE.div [ HA.class' "field", HA.class' "has-addons" ]
-    [ HE.div [ HA.class' "control", HA.class' "is-expanded"]
-        [ HE.input [ HA.class' "input", HA.class' "is-medium", HA.type' "text", HA.placeholder "Add a new todo", HA.value model.newTodo, HA.onInput SetNewTodo ]  ]
+    [ HE.div [ HA.class' "control", HA.class' "is-expanded" ]
+        [ HE.input [ HA.class' "input", HA.class' "is-medium", HA.type' "text", HA.placeholder "Add a new todo", HA.value model.newTodo, HA.onInput SetNewTodo ] ]
     , HE.div [ HA.class' "control" ]
         [ HE.button [ HA.class' "button", HA.class' "is-primary", HA.class' "is-medium", HA.onClick AddNewTodo ]
             [ HE.i' [ HA.class' "fas", HA.class' "fa-plus" ] ]
@@ -137,22 +182,27 @@ viewTodo todo =
         [ HE.div [ HA.class' "column" ]
             [ HE.p [ HA.class' "subtitle" ] [ HE.text todo.description ] ]
         , HE.div [ HA.class' "column", HA.class' "is-narrow" ]
-            [ HE.div [ HA.class' "buttons"]
-                [ HE.button [ HA.class' "button"
-                            , HA.class' if todo.completed then "is-success" else ""
-                            , HA.onClick (ToggleCompleted todo.id)
-                            ] [ HE.i' [ HA.class' "fa", HA.class' "fa-check" ] ]
-                , HE.button [ HA.class' "button"
-                            , HA.class' "is-primary"
-                            , HA.onClick (StartEdit todo.id)
-                            ] [ HE.i' [ HA.class' "fa", HA.class' "fa-edit" ] ]
-                , HE.button [ HA.class' "button"
-                            , HA.class' "is-danger"
-                            , HA.onClick (DeleteTodo todo.id)
-                            ] [ HE.i' [ HA.class' "fa", HA.class' "fa-times" ] ]
+            [ HE.div [ HA.class' "buttons" ]
+                [ HE.button
+                    [ HA.class' "button"
+                    , HA.class' if todo.completed then "is-success" else ""
+                    , HA.onClick (ToggleCompleted todo.id)
+                    ]
+                    [ HE.i' [ HA.class' "fa", HA.class' "fa-check" ] ]
+                , HE.button
+                    [ HA.class' "button"
+                    , HA.class' "is-primary"
+                    , HA.onClick (StartEdit todo.id)
+                    ]
+                    [ HE.i' [ HA.class' "fa", HA.class' "fa-edit" ] ]
+                , HE.button
+                    [ HA.class' "button"
+                    , HA.class' "is-danger"
+                    , HA.onClick (DeleteTodo todo.id)
+                    ]
+                    [ HE.i' [ HA.class' "fa", HA.class' "fa-times" ] ]
                 ]
             ]
-
         ]
     ]
 
@@ -160,29 +210,39 @@ editTodo :: TodoBeingEdited -> Html Msg
 editTodo todo =
   HE.div [ HA.class' "box" ]
     [ HE.div [ HA.class' "field", HA.class' "is-grouped" ]
-      [ HE.div [ HA.class' "control", HA.class' "is-expanded" ]
-          [ HE.input [ HA.class' "input"
-                     , HA.class' "is-medium"
-                     , HA.value todo.description
-                     , HA.onInput SetEditDescription
-                     ]
-          ]
-      , HE.div [ HA.class' "control", HA.class' "buttons" ]
-          [ HE.button [ HA.class' "button", HA.class' "is-primary", HA.onClick ApplyEdit ]
-              [ HE.i' [ HA.class' "fa", HA.class' "fa-save" ] ]
-          , HE.button [ HA.class' "button", HA.class' "is-warning", HA.onClick CancelEdit ]
-              [ HE.i' [ HA.class' "fa", HA.class' "fa-arrow-right" ] ]
-          ]
-      ]
+        [ HE.div [ HA.class' "control", HA.class' "is-expanded" ]
+            [ HE.input
+                [ HA.class' "input"
+                , HA.class' "is-medium"
+                , HA.value todo.description
+                , HA.onInput SetEditDescription
+                ]
+            ]
+        , HE.div [ HA.class' "control", HA.class' "buttons" ]
+            [ HE.button [ HA.class' "button", HA.class' "is-primary", HA.onClick ApplyEdit ]
+                [ HE.i' [ HA.class' "fa", HA.class' "fa-save" ] ]
+            , HE.button [ HA.class' "button", HA.class' "is-warning", HA.onClick CancelEdit ]
+                [ HE.i' [ HA.class' "fa", HA.class' "fa-arrow-right" ] ]
+            ]
+        ]
     ]
 
-todoList :: Model -> Html Msg
-todoList model =
-  let renderTodo todo = case model.todoBeingEdited of
-                          Just todoBeingEdited | todo.id == todoBeingEdited.id -> editTodo todoBeingEdited
-                          _ -> viewTodo todo
+viewTodoList :: Model -> Html Msg
+viewTodoList model =
+  let
+    renderTodo todo = case model.todoBeingEdited of
+      Just todoBeingEdited
+        | todo.id == todoBeingEdited.id -> editTodo todoBeingEdited
+      _ -> viewTodo todo
+
+    shouldRenderTodo todo = case model.filterType of
+      All -> true
+      Active -> not todo.completed
+      Completed -> todo.completed
+
+    todos = filter shouldRenderTodo model.todoList
   in
-  HE.ul_ [ map renderTodo model.todoList ]
+    HE.ul_ [ map renderTodo todos ]
 
 subscribe :: Array (Subscription Msg)
 subscribe = []
