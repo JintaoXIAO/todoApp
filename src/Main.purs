@@ -2,20 +2,18 @@ module Main
   ( main
   ) where
 
-import Data.Array (filter, head, length, null)
+import Data.Array (filter, head)
 import Data.Maybe (Maybe(..), fromJust)
 import Data.Tuple (Tuple(..))
 import Data.UUID.Random (UUIDv4, make)
 import Effect (Effect)
-import Effect.Aff (Aff)
 import Effect.Class (liftEffect)
 import Flame (Html, QuerySelector(..), Subscription)
 import Flame.Application.Effectful as FAE
-import Flame.Application.NoEffects as FAN
 import Flame.Html.Attribute as HA
 import Flame.Html.Element as HE
 import Partial.Unsafe (unsafePartial)
-import Prelude (class Eq, Unit, bind, const, identity, map, not, otherwise, pure, ($), (+), (/=), (<<<), (<>), (==), (>>>))
+import Prelude (class Eq, Unit, bind, identity, map, not, otherwise, pure, ($), (/=), (<>), (==), (>>>))
 
 type Todo
   = { description :: String
@@ -26,6 +24,7 @@ type Todo
 type TodoBeingEdited
   = { id :: UUIDv4
     , description :: String
+    , hasUpdate :: Boolean
     }
 
 type Model
@@ -125,12 +124,16 @@ update { model, message } = case message of
           >>> unsafePartial fromJust
           $ model.todoList
     in
-      pure $ \_ -> model { todoBeingEdited = Just { id, description: desc } }
+      pure $ \_ -> model { todoBeingEdited = Just { id, description: desc, hasUpdate: false } }
   SetEditDescription description ->
     let
       todoBeingEdited = (unsafePartial fromJust) model.todoBeingEdited
+
+      originalTodo = filter (\todo -> todo.id == todoBeingEdited.id) >>> head >>> unsafePartial fromJust $ model.todoList
+
+      changed = description /= originalTodo.description
     in
-      pure $ \_ -> model { todoBeingEdited = Just (todoBeingEdited { description = description }) }
+      pure $ \_ -> model { todoBeingEdited = Just (todoBeingEdited { description = description, hasUpdate = changed }) }
   SetFilter ft -> pure $ \_ -> model { filterType = ft }
 
 view :: Model -> Html Msg
@@ -219,7 +222,7 @@ editTodo todo =
                 ]
             ]
         , HE.div [ HA.class' "control", HA.class' "buttons" ]
-            [ HE.button [ HA.class' "button", HA.class' "is-primary", HA.onClick ApplyEdit ]
+            [ HE.button [ HA.class' "button", HA.class' "is-primary", HA.onClick ApplyEdit, HA.disabled (not todo.hasUpdate) ]
                 [ HE.i' [ HA.class' "fa", HA.class' "fa-save" ] ]
             , HE.button [ HA.class' "button", HA.class' "is-warning", HA.onClick CancelEdit ]
                 [ HE.i' [ HA.class' "fa", HA.class' "fa-arrow-right" ] ]

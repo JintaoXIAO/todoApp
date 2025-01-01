@@ -2628,6 +2628,23 @@
       return createClass($134($135($136)));
     };
   };
+  var booleanToFalsyString = function(v) {
+    if (v) {
+      return "true";
+    }
+    ;
+    if (!v) {
+      return "";
+    }
+    ;
+    throw new Error("Failed pattern match at Flame.Html.Attribute.Internal (line 66, column 7 - line 68, column 23): " + [v.constructor.name]);
+  };
+  var disabled = /* @__PURE__ */ function() {
+    var $148 = createProperty("disabled");
+    return function($149) {
+      return $148(booleanToFalsyString($149));
+    };
+  }();
 
   // output/Flame.Html.Element/foreign.js
   var textNode = 1;
@@ -3934,8 +3951,8 @@
           newTodo: v.model.newTodo,
           todoBeingEdited: v.model.todoBeingEdited,
           todoList: map6(function(todo) {
-            var $62 = eq12(todo.id)(v.message.value0);
-            if ($62) {
+            var $63 = eq12(todo.id)(v.message.value0);
+            if ($63) {
               return {
                 id: todo.id,
                 description: todo.description,
@@ -3980,8 +3997,8 @@
           filterType: v.model.filterType,
           newTodo: v.model.newTodo,
           todoList: map6(function(todo) {
-            var $65 = eq12(todo.id)(todoBeingEdited.id);
-            if ($65) {
+            var $66 = eq12(todo.id)(todoBeingEdited.id);
+            if ($66) {
               return {
                 id: todo.id,
                 completed: todo.completed,
@@ -3998,11 +4015,11 @@
     ;
     if (v.message instanceof StartEdit) {
       var desc = function() {
-        var $78 = map6(function(todo) {
+        var $79 = map6(function(todo) {
           return todo.description;
         });
-        return function($79) {
-          return fromJust4(head($78($79)));
+        return function($80) {
+          return fromJust4(head($79($80)));
         };
       }()(filter(function(todo) {
         return eq12(todo.id)(v.message.value0);
@@ -4014,7 +4031,8 @@
           todoList: v.model.todoList,
           todoBeingEdited: new Just({
             id: v.message.value0,
-            description: desc
+            description: desc,
+            hasUpdate: false
           })
         };
       });
@@ -4022,6 +4040,12 @@
     ;
     if (v.message instanceof SetEditDescription) {
       var todoBeingEdited = fromJust4(v.model.todoBeingEdited);
+      var originalTodo = function($82) {
+        return fromJust4(head($82));
+      }(filter(function(todo) {
+        return eq12(todo.id)(todoBeingEdited.id);
+      })(v.model.todoList));
+      var changed = v.message.value0 !== originalTodo.description;
       return pure3(function(v1) {
         return {
           filterType: v.model.filterType,
@@ -4029,7 +4053,8 @@
           todoList: v.model.todoList,
           todoBeingEdited: new Just({
             id: todoBeingEdited.id,
-            description: v.message.value0
+            description: v.message.value0,
+            hasUpdate: changed
           })
         };
       });
@@ -4046,7 +4071,7 @@
       });
     }
     ;
-    throw new Error("Failed pattern match at Main (line 73, column 29 - line 134, column 57): " + [v.message.constructor.name]);
+    throw new Error("Failed pattern match at Main (line 72, column 29 - line 137, column 57): " + [v.message.constructor.name]);
   };
   var subscribe = [];
   var inputField = function(model) {
@@ -4092,8 +4117,8 @@
   var eq22 = /* @__PURE__ */ eq(eqFilterType);
   var filterTabs = function(model) {
     var filterClass = function(ft) {
-      var $73 = eq22(model.filterType)(ft);
-      if ($73) {
+      var $74 = eq22(model.filterType)(ft);
+      if ($74) {
         return "is-active";
       }
       ;
@@ -4102,7 +4127,7 @@
     return div4([class$prime2("tabs"), class$prime2("is-toggle"), class$prime2("is-fullwidth")])([ul_2([li2([class$prime2(filterClass(All.value))])([a2([onClick(new SetFilter(All.value))])([text("All")])]), li2([class$prime2(filterClass(Active.value))])([a2([onClick(new SetFilter(Active.value))])([text("Active")])]), li2([class$prime2(filterClass(Completed.value))])([a2([onClick(new SetFilter(Completed.value))])([text("Completed")])])])]);
   };
   var editTodo = function(todo) {
-    return div4([class$prime2("box")])([div4([class$prime2("field"), class$prime2("is-grouped")])([div4([class$prime2("control"), class$prime2("is-expanded")])([input2([class$prime2("input"), class$prime2("is-medium"), value(todo.description), onInput(SetEditDescription.create)])]), div4([class$prime2("control"), class$prime2("buttons")])([button2([class$prime2("button"), class$prime2("is-primary"), onClick(ApplyEdit.value)])([i$prime2([class$prime2("fa"), class$prime2("fa-save")])]), button2([class$prime2("button"), class$prime2("is-warning"), onClick(CancelEdit.value)])([i$prime2([class$prime2("fa"), class$prime2("fa-arrow-right")])])])])]);
+    return div4([class$prime2("box")])([div4([class$prime2("field"), class$prime2("is-grouped")])([div4([class$prime2("control"), class$prime2("is-expanded")])([input2([class$prime2("input"), class$prime2("is-medium"), value(todo.description), onInput(SetEditDescription.create)])]), div4([class$prime2("control"), class$prime2("buttons")])([button2([class$prime2("button"), class$prime2("is-primary"), onClick(ApplyEdit.value), disabled(!todo.hasUpdate)])([i$prime2([class$prime2("fa"), class$prime2("fa-save")])]), button2([class$prime2("button"), class$prime2("is-warning"), onClick(CancelEdit.value)])([i$prime2([class$prime2("fa"), class$prime2("fa-arrow-right")])])])])]);
   };
   var viewTodoList = function(model) {
     var shouldRenderTodo = function(todo) {
@@ -4118,7 +4143,7 @@
         return todo.completed;
       }
       ;
-      throw new Error("Failed pattern match at Main (line 238, column 29 - line 241, column 34): " + [model.filterType.constructor.name]);
+      throw new Error("Failed pattern match at Main (line 241, column 29 - line 244, column 34): " + [model.filterType.constructor.name]);
     };
     var todos = filter(shouldRenderTodo)(model.todoList);
     var renderTodo = function(todo) {
