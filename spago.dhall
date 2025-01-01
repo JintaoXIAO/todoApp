@@ -12,7 +12,18 @@ to generate this file without the comments in this block.
 -}
 { name = "my-project"
 , dependencies =
-  [ "arrays", "console", "effect", "flame", "maybe", "partial", "prelude" ]
-, packages = ./packages.dhall
+  [ "aff"
+  , "arrays"
+  , "console"
+  , "effect"
+  , "flame"
+  , "maybe"
+  , "partial"
+  , "prelude"
+  , "tuples"
+  , "uuid"
+  , "uuidv4"
+  ]
+, packages = ../packages.dhall
 , sources = [ "src/**/*.purs", "test/**/*.purs" ]
 }

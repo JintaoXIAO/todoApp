@@ -1,26 +1,34 @@
-module Main where
-
+module Main
+  ( main
+  )
+  where
 
 
 import Data.Array (filter, length, null, head)
 import Data.Maybe (Maybe(..), fromJust)
+import Data.Tuple (Tuple(..))
+
+import Data.UUID.Random (UUIDv4, make)
 import Effect (Effect)
+import Effect.Aff (Aff)
+import Effect.Class (liftEffect)
 import Flame (Html, QuerySelector(..), Subscription)
+import Flame.Application.Effectful as FAE
 import Flame.Application.NoEffects as FAN
 import Flame.Html.Attribute as HA
 import Flame.Html.Element as HE
 import Partial.Unsafe (unsafePartial)
-import Prelude (Unit, map, not, otherwise, ($), (+), (/=), (<>), (==), (>>>))
+import Prelude (Unit, identity, map, not, otherwise, pure, ($), (+), (/=), (<>), (==), (>>>), bind)
 
 
 type Todo =
   { description :: String
   , completed :: Boolean
-  , id :: Int
+  , id :: UUIDv4
   }
 
 type TodoBeingEdited =
-  { id :: Int
+  { id :: UUIDv4
   , description :: String
   }
 
@@ -33,41 +41,47 @@ type Model =
 data Msg
   = SetNewTodo String
   | AddNewTodo
-  | ToggleCompleted Int
-  | DeleteTodo Int
+  | ToggleCompleted UUIDv4
+  | DeleteTodo UUIDv4
   | CancelEdit
   | ApplyEdit
-  | StartEdit Int
+  | StartEdit UUIDv4
   | SetEditDescription String
 
-init :: Model
-init =
-  { todoList:
-    [ { id: 1, description: "Buy milk", completed: false }
-    , { id: 2, description: "Do laundry", completed: true }
-    ]
-  , newTodo: ""
-  , todoBeingEdited: Nothing
-  }
+initGen :: Effect (Tuple Model (Maybe Msg))
+initGen = do
+  uuid01 <- make
+  uuid02 <- make
+  pure $ Tuple
+          { todoList:
+            [ { id: uuid01, description: "Buy milk", completed: false }
+            , { id: uuid02, description: "Do laundry", completed: true }
+            ]
+          , newTodo: ""
+          , todoBeingEdited: Nothing
+          }
+          Nothing
 
-update :: Model -> Msg -> Model
-update model msg =
-  case msg of
-    SetNewTodo newTodo -> model { newTodo = newTodo }
+update :: FAE.AffUpdate Model Msg
+update { model, message } =
+  case message of
+    SetNewTodo newTodo -> pure $ \_ -> model { newTodo = newTodo }
     AddNewTodo
-      | model.newTodo == "" -> model
-      | otherwise ->
-          model { newTodo = ""
-                , todoList = model.todoList <> [{ id: generateNewTodoId model, description: model.newTodo, completed: false }] }
-    ToggleCompleted id -> model { todoList = map (\todo ->
+      | model.newTodo == "" -> pure identity
+      | otherwise -> do
+          newTodoId <- liftEffect generateNewTodoId
+          pure $ \_ ->
+            model { newTodo = ""
+                  , todoList = model.todoList <> [{ id: newTodoId, description: model.newTodo, completed: false }] }
+    ToggleCompleted id -> pure $ \_ -> model { todoList = map (\todo ->
                                                       if todo.id == id
                                                       then todo { completed = not todo.completed }
                                                       else todo) model.todoList }
-    DeleteTodo id -> model { todoList = filter (\todo -> todo.id /= id) model.todoList }
-    CancelEdit -> model { todoBeingEdited = Nothing }
+    DeleteTodo id -> pure $ \_ -> model { todoList = filter (\todo -> todo.id /= id) model.todoList }
+    CancelEdit -> pure $ \_ -> model { todoBeingEdited = Nothing }
     ApplyEdit ->
       let todoBeingEdited = (unsafePartial fromJust) model.todoBeingEdited in
-      model { todoList = map (\todo ->
+      pure $ \_ -> model { todoList = map (\todo ->
                                 if todo.id == todoBeingEdited.id
                                 then todo { description = todoBeingEdited.description }
                                 else todo) model.todoList
@@ -81,18 +95,15 @@ update model msg =
                   $ model.todoList
 
       in
-      model { todoBeingEdited = Just { id, description: desc } }
+      pure $ \_ -> model { todoBeingEdited = Just { id, description: desc } }
     SetEditDescription description ->
       let todoBeingEdited = (unsafePartial fromJust) model.todoBeingEdited
       in
-      model { todoBeingEdited = Just (todoBeingEdited { description = description }) }
+      pure $ \_ -> model { todoBeingEdited = Just (todoBeingEdited { description = description }) }
 
   where
-    generateNewTodoId :: Model -> Int
-    generateNewTodoId _model =
-      if null _model.todoList
-      then 1
-      else length _model.todoList + 1
+    generateNewTodoId :: Effect UUIDv4
+    generateNewTodoId = make
 
 view :: Model -> Html Msg
 view model =
@@ -177,8 +188,9 @@ subscribe :: Array (Subscription Msg)
 subscribe = []
 
 main :: Effect Unit
-main =
-  FAN.mount_ (QuerySelector "main")
+main = do
+  init <- initGen
+  FAE.mount_ (QuerySelector "main")
     { init
     , view
     , update
