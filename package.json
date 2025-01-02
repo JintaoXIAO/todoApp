@@ -2,11 +2,13 @@
   "name": "todoApp",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "type": "module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "spago bundle-app --to dist/index.js",
-    "serve": "concurrently 'vite ./dist' 'tailwindcss -i ./style.css -o ./dist/style.css --watch'"
+    "buildP": "spago bundle-app --to dist/index.js",
+    "serve": "concurrently 'vite' 'tailwindcss -i ./style.css -o ./dist/style.css --watch'",
+    "build": "vite build",
+    "preview": "vite preview"
   },
   "keywords": [],
   "author": "",
@@ -20,6 +22,7 @@
   },
   "dependencies": {
     "@fortawesome/fontawesome-free": "^6.7.2",
+    "akar-icons-fonts": "^1.1.22",
     "bulma": "^1.0.3"
   }
 }

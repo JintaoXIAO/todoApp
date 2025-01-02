@@ -11,6 +11,9 @@ importers:
       '@fortawesome/fontawesome-free':
         specifier: ^6.7.2
         version: 6.7.2
+      akar-icons-fonts:
+        specifier: ^1.1.22
+        version: 1.1.22
       bulma:
         specifier: ^1.0.3
         version: 1.0.3
@@ -421,6 +424,9 @@ packages:
 
   '@types/estree@1.0.6':
     resolution: {integrity: sha512-AYnb1nQyY49te+VRAVgmzfcgjYS91mY5P0TKUDCLEM+gNnA+3T6rWITXRLYCpahpqSQbN5cE+gHpnPyXjHWxcw==}
+
+  akar-icons-fonts@1.1.22:
+    resolution: {integrity: sha512-VeHrQni4UNhNn0h8Zd0H8LZp+XQ58lx/5Yu2pwdZ7Gi2hfwRSQkDdfVt14zS3PthVVSWrrOxCjtOlGMsTVkTwQ==}
 
   ansi-regex@5.0.1:
     resolution: {integrity: sha512-quJQXlTSUGL2LH9SUXo8VwsY4soanhgo6LNSm84E1LBcE8s3O0wpdiRzyR9z/ZZJMlMWv37qOOb9pdJlMUEKFQ==}
@@ -1181,6 +1187,8 @@ snapshots:
     optional: true
 
   '@types/estree@1.0.6': {}
+
+  akar-icons-fonts@1.1.22: {}
 
   ansi-regex@5.0.1: {}
 
