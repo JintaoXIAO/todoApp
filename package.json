@@ -5,8 +5,8 @@
   "type": "module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "buildP": "spago bundle-app --to dist/index.js",
-    "serve": "concurrently 'vite' 'tailwindcss -i ./style.css -o ./dist/style.css --watch'",
+    "buildP": "spago bundle-app --to index.js",
+    "serve": "vite",
     "build": "vite build",
     "preview": "vite preview"
   },
@@ -15,8 +15,9 @@
   "license": "ISC",
   "packageManager": "pnpm@9.15.1+sha512.1acb565e6193efbebda772702950469150cf12bcc764262e7587e71d19dc98a423dff9536e57ea44c49bdf790ff694e83c27be5faa23d67e0c033b583be4bfcf",
   "devDependencies": {
+    "autoprefixer": "^10.4.20",
     "concurrently": "^9.1.2",
-    "sass": "^1.83.0",
+    "postcss": "^8.4.49",
     "tailwindcss": "^3.4.17",
     "vite": "^6.0.6"
   },

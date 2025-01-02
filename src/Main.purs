@@ -12,7 +12,7 @@ import Flame (Html, QuerySelector(..), Subscription)
 import Flame.Application.Effectful as FAE
 import Flame.Html.Attribute as HA
 import Flame.Html.Element as HE
-import Htmls (Classes(..))
+import Htmls (Classes(..), class_if, class_if_else)
 import Partial.Unsafe (unsafePartial)
 import Prelude (class Eq, Unit, bind, identity, map, not, otherwise, pure, ($), (/=), (<>), (==), (>>>), (<<<))
 
@@ -145,8 +145,8 @@ view :: Model -> Html Msg
 view model =
   HE.div [ HA.class' $ Classes [ "max-w-md", "mx-auto", "bg-white", "shadow-lg", "rounded-lg", "overflow-hidden", "mt-16" ] ]
     [ appTitle
-    --    , filterTabs model
     , inputField model
+    , filterTabs model
     , viewTodoList model
     ]
 
@@ -160,10 +160,25 @@ appTitle =
 
 filterTabs :: Model -> Html Msg
 filterTabs model =
-  let
-    filterClass ft = if model.filterType == ft then "is-active" else ""
-  in
-    HE.div [ HA.class' "tabs", HA.class' "is-toggle", HA.class' "is-fullwidth" ]
+  HE.div [ HA.class' $ Classes [ "flex", "items-center", "justify-center", "space-x-1", "py-2" ] ]
+    [ HE.button
+        [ HA.class' $ Classes [ "bg-teal-500", "hover:bg-teal-700", "border-teal-500", "hover:border-teal-700", "text-white", "text-sm", "border-4", "py-1", "px-2", "rounded", "focus:outline-none", "focus:ring-2", "focus:ring-teal-500" ]
+        , HA.onClick (SetFilter All)
+        ]
+        [ HE.text "All" ]
+    , HE.button
+        [ HA.class' $ Classes [ "bg-teal-500", "hover:bg-teal-700", "border-teal-500", "hover:border-teal-700", "text-white", "text-sm", "border-4", "py-1", "px-2", "rounded", "focus:outline-none", "focus:ring-2", "focus:ring-teal-500" ]
+        , HA.onClick (SetFilter Active)
+        ]
+        [ HE.text "Active" ]
+    , HE.button
+        [ HA.class' $ Classes [ "bg-teal-500", "hover:bg-teal-700", "border-teal-500", "hover:border-teal-700", "text-white", "text-sm", "border-4", "py-1", "px-2", "rounded", "focus:outline-none", "focus:ring-2", "focus:ring-teal-500" ]
+        , HA.onClick (SetFilter Completed)
+        ]
+        [ HE.text "Completed" ]
+    ]
+
+{-
       [ HE.ul_
           [ HE.li [ HA.class' (filterClass All) ]
               [ HE.a [ HA.onClick (SetFilter All) ] [ HE.text "All" ] ]
@@ -173,7 +188,7 @@ filterTabs model =
               [ HE.a [ HA.onClick (SetFilter Completed) ] [ HE.text "Completed" ] ]
           ]
       ]
-
+-}
 inputField :: Model -> Html Msg
 inputField model =
   HE.div [ HA.class' $ Classes [ "w-full", "max-w-sm", "mx-auto", "px-4", "py-2" ] ]
@@ -196,40 +211,50 @@ inputField model =
 viewTodo :: Todo -> Html Msg
 viewTodo todo =
   HE.li [ HA.class' "py-4" ]
-    [ HE.div [ HA.class' $ Classes [ "flex", "items-center" ] ]
-        [ HE.input
-            [ HA.class' $ Classes [ "h-4", "w-4", "text-teal-600", "focus:ring-teal-500", "border-gray-300", "rounded" ]
-            , HA.type' "checkbox"
-            , HA.checked todo.completed
+    [ HE.div [ HA.class' $ Classes [ "flex", "items-center", "gap-1" ] ]
+        [ HE.button
+            [ HA.class' $ Classes [ "h-4", "w-4", (class_if_else "text-gray-600" todo.completed "text-green-600"), "border-gray-300", "rounded" ]
             , HA.onClick (ToggleCompleted todo.id)
             ]
+            [ HE.i' [ HA.class' "ai-ribbon" ] ]
         , HE.button
-            [ HA.class' $ Classes [ "h-8", "w-8", "text-teal-600", "focus:ring-teal-500", "rounded" ]
+            [ HA.class' $ Classes [ "h-4", "w-4", "text-red-600", "border-gray-300", "rounded" ]
             , HA.onClick (DeleteTodo todo.id)
             ]
-            [ HE.text "X" ]
+            [ HE.i' [ HA.class' "ai-trash-can" ] ]
+        , HE.button
+            [ HA.class' $ Classes [ "h-4", "w-4", "text-neutral-600", "border-gray-300", "rounded" ]
+            , HA.onClick (StartEdit todo.id)
+            ]
+            [ HE.i' [ HA.class' "ai-edit" ] ]
         , HE.label [ HA.class' $ Classes [ "ml-3", "block", "text-gray-900" ] ]
-            [ HE.span [ HA.class' $ Classes [ "text-lg", "font-medium" ] ] [ HE.text todo.description ] ]
+            [ HE.span [ HA.class' $ Classes [ "text-lg", "font-medium", (class_if "line-through" todo.completed) ] ]
+                [ HE.text todo.description ]
+            ]
         ]
     ]
 
 editTodo :: TodoBeingEdited -> Html Msg
 editTodo todo =
-  HE.div [ HA.class' "box" ]
-    [ HE.div [ HA.class' "field", HA.class' "is-grouped" ]
-        [ HE.div [ HA.class' "control", HA.class' "is-expanded" ]
-            [ HE.input
-                [ HA.class' "input"
-                , HA.class' "is-medium"
-                , HA.value todo.description
-                , HA.onInput (SetEditDescription todo.id)
-                ]
+  HE.li [ HA.class' "py-4" ]
+    [ HE.div [ HA.class' $ Classes [ "flex", "items-center", "gap-1" ] ]
+        [ HE.input
+            [ HA.class' $ Classes [ "h-8", "w-full", "text-teal-600", "focus:ring-teal-500", "border-gray-300", "rounded", "pl-3" ]
+            , HA.type' "text"
+            , HA.value todo.description
+            , HA.onInput (SetEditDescription todo.id)
             ]
-        , HE.div [ HA.class' "control", HA.class' "buttons" ]
-            [ HE.button [ HA.class' "button", HA.class' "is-primary", HA.onClick (ApplyEdit todo.id), HA.disabled (not todo.hasUpdate) ]
-                [ HE.i' [ HA.class' "fa", HA.class' "fa-save" ] ]
-            , HE.button [ HA.class' "button", HA.class' "is-warning", HA.onClick (CancelEdit todo.id) ]
-                [ HE.i' [ HA.class' "fa", HA.class' "fa-arrow-right" ] ]
+        , HE.div [ HA.class' $ Classes [ "ml-3", "flex", "items-center" ] ]
+            [ HE.button
+                [ HA.class' $ Classes [ "h-8", "px-4", "text-sm", "text-white", "bg-teal-600", "rounded", "hover:bg-teal-700", "focus:outline-none", "focus:ring-2", "focus:ring-teal-500" ]
+                , HA.onClick (ApplyEdit todo.id)
+                ]
+                [ HE.i' [ HA.class' "ai-circle-check" ] ]
+            , HE.button
+                [ HA.class' $ Classes [ "h-8", "px-4", "ml-2", "text-sm", "text-gray-700", "bg-white", "border", "border-gray-300", "rounded", "hover:bg-gray-100", "focus:outline-none", "focus:ring-2", "focus:ring-teal-500" ]
+                , HA.onClick (CancelEdit todo.id)
+                ]
+                [ HE.i' [ HA.class' "ai-circle-minus" ] ]
             ]
         ]
     ]

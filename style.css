@@ -1,5 +1,5 @@
+@import '@fortawesome/fontawesome-free/css/all.css';
+@import 'akar-icons-fonts/src/css/akar-icons.css';
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-@import '@fortawesome/fontawesome-free/css/all.css';
-@import 'akar-icons-fonts/src/css/akar-icons.css';

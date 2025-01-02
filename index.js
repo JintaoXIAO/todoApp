@@ -46,14 +46,14 @@
   // output/Data.Function/index.js
   var flip = function(f) {
     return function(b) {
-      return function(a2) {
-        return f(a2)(b);
+      return function(a) {
+        return f(a)(b);
       };
     };
   };
-  var $$const = function(a2) {
+  var $$const = function(a) {
     return function(v) {
-      return a2;
+      return a;
     };
   };
 
@@ -97,9 +97,9 @@
   var applySecond = function(dictApply) {
     var apply1 = apply(dictApply);
     var map8 = map(dictApply.Functor0());
-    return function(a2) {
+    return function(a) {
       return function(b) {
-        return apply1(map8($$const(identity2))(a2))(b);
+        return apply1(map8($$const(identity2))(a))(b);
       };
     };
   };
@@ -112,8 +112,8 @@
     var apply2 = apply(dictApplicative.Apply0());
     var pure1 = pure(dictApplicative);
     return function(f) {
-      return function(a2) {
-        return apply2(pure1(f))(a2);
+      return function(a) {
+        return apply2(pure1(f))(a);
       };
     };
   };
@@ -201,9 +201,9 @@
     var bind3 = bind(dictMonad.Bind1());
     var pure4 = pure(dictMonad.Applicative0());
     return function(f) {
-      return function(a2) {
+      return function(a) {
         return bind3(f)(function(f$prime) {
-          return bind3(a2)(function(a$prime) {
+          return bind3(a)(function(a$prime) {
             return pure4(f$prime(a$prime));
           });
         });
@@ -456,8 +456,8 @@
       };
     }
   };
-  var fromMaybe = function(a2) {
-    return maybe(a2)(identity3);
+  var fromMaybe = function(a) {
+    return maybe(a)(identity3);
   };
   var fromJust = function() {
     return function(v) {
@@ -553,15 +553,15 @@
   };
 
   // output/Effect/foreign.js
-  var pureE = function(a2) {
+  var pureE = function(a) {
     return function() {
-      return a2;
+      return a;
     };
   };
-  var bindE = function(a2) {
+  var bindE = function(a) {
     return function(f) {
       return function() {
-        return f(a2())();
+        return f(a())();
       };
     };
   };
@@ -661,9 +661,9 @@
   var heytingAlgebraBoolean = {
     ff: false,
     tt: true,
-    implies: function(a2) {
+    implies: function(a) {
       return function(b) {
-        return disj(heytingAlgebraBoolean)(not(heytingAlgebraBoolean)(a2))(b);
+        return disj(heytingAlgebraBoolean)(not(heytingAlgebraBoolean)(a))(b);
       };
     },
     conj: boolConj,
@@ -757,27 +757,27 @@
 
   // output/Data.Function.Uncurried/foreign.js
   var runFn2 = function(fn) {
-    return function(a2) {
+    return function(a) {
       return function(b) {
-        return fn(a2, b);
+        return fn(a, b);
       };
     };
   };
   var runFn3 = function(fn) {
-    return function(a2) {
+    return function(a) {
       return function(b) {
         return function(c) {
-          return fn(a2, b, c);
+          return fn(a, b, c);
         };
       };
     };
   };
   var runFn4 = function(fn) {
-    return function(a2) {
+    return function(a) {
       return function(b) {
         return function(c) {
           return function(d) {
-            return fn(a2, b, c, d);
+            return fn(a, b, c, d);
           };
         };
       };
@@ -786,18 +786,18 @@
 
   // output/Data.Traversable/foreign.js
   var traverseArrayImpl = /* @__PURE__ */ function() {
-    function array1(a2) {
-      return [a2];
+    function array1(a) {
+      return [a];
     }
-    function array2(a2) {
+    function array2(a) {
       return function(b) {
-        return [a2, b];
+        return [a, b];
       };
     }
-    function array3(a2) {
+    function array3(a) {
       return function(b) {
         return function(c) {
-          return [a2, b, c];
+          return [a, b, c];
         };
       };
     }
@@ -871,8 +871,8 @@
   };
   var unsafeIndex1 = /* @__PURE__ */ unsafeIndex();
   var slice = /* @__PURE__ */ runFn3(sliceImpl);
-  var singleton2 = function(a2) {
-    return [a2];
+  var singleton2 = function(a) {
+    return [a];
   };
   var index = /* @__PURE__ */ function() {
     return runFn4(indexImpl)(Just.create)(Nothing.value);
@@ -2086,8 +2086,8 @@
     var Monad0 = dictMonadError.MonadThrow0().Monad0();
     var map8 = map(Monad0.Bind1().Apply0().Functor0());
     var pure4 = pure(Monad0.Applicative0());
-    return function(a2) {
-      return catchError1(map8(Right.create)(a2))(function($52) {
+    return function(a) {
+      return catchError1(map8(Right.create)(a))(function($52) {
         return pure4(Left.create($52));
       });
     };
@@ -2252,8 +2252,8 @@
   }
 
   // output/Data.Nullable/foreign.js
-  function nullable(a2, r, f) {
-    return a2 == null ? r : f(a2);
+  function nullable(a, r, f) {
+    return a == null ? r : f(a);
   }
 
   // output/Data.Nullable/index.js
@@ -2263,28 +2263,28 @@
 
   // output/Effect.Uncurried/foreign.js
   var runEffectFn1 = function runEffectFn12(fn) {
-    return function(a2) {
+    return function(a) {
       return function() {
-        return fn(a2);
+        return fn(a);
       };
     };
   };
   var runEffectFn2 = function runEffectFn22(fn) {
-    return function(a2) {
+    return function(a) {
       return function(b) {
         return function() {
-          return fn(a2, b);
+          return fn(a, b);
         };
       };
     };
   };
   var runEffectFn4 = function runEffectFn42(fn) {
-    return function(a2) {
+    return function(a) {
       return function(b) {
         return function(c) {
           return function(d) {
             return function() {
-              return fn(a2, b, c, d);
+              return fn(a, b, c, d);
             };
           };
         };
@@ -2369,15 +2369,15 @@
   };
   var defaultSucc = function(toEnum$prime) {
     return function(fromEnum$prime) {
-      return function(a2) {
-        return toEnum$prime(fromEnum$prime(a2) + 1 | 0);
+      return function(a) {
+        return toEnum$prime(fromEnum$prime(a) + 1 | 0);
       };
     };
   };
   var defaultPred = function(toEnum$prime) {
     return function(fromEnum$prime) {
-      return function(a2) {
-        return toEnum$prime(fromEnum$prime(a2) - 1 | 0);
+      return function(a) {
+        return toEnum$prime(fromEnum$prime(a) - 1 | 0);
       };
     };
   };
@@ -2549,29 +2549,6 @@
       return createClass($134($135($136)));
     };
   };
-  var booleanToFalsyString = function(v) {
-    if (v) {
-      return "true";
-    }
-    ;
-    if (!v) {
-      return "";
-    }
-    ;
-    throw new Error("Failed pattern match at Flame.Html.Attribute.Internal (line 66, column 7 - line 68, column 23): " + [v.constructor.name]);
-  };
-  var checked = /* @__PURE__ */ function() {
-    var $140 = createProperty("checked");
-    return function($141) {
-      return $140(booleanToFalsyString($141));
-    };
-  }();
-  var disabled = /* @__PURE__ */ function() {
-    var $148 = createProperty("disabled");
-    return function($149) {
-      return $148(booleanToFalsyString($149));
-    };
-  }();
 
   // output/Flame.Html.Element/foreign.js
   var textNode = 1;
@@ -3689,6 +3666,22 @@
       return v;
     }
   };
+  var class_if_else = function(className) {
+    return function(condition) {
+      return function(elseClassName) {
+        if (condition) {
+          return className;
+        }
+        ;
+        return elseClassName;
+      };
+    };
+  };
+  var class_if = function(className) {
+    return function(condition) {
+      return class_if_else(className)(condition)("");
+    };
+  };
 
   // output/Main/index.js
   var toNodeArray2 = /* @__PURE__ */ toNodeArray(toNodeNodeDataNodeData);
@@ -3697,8 +3690,8 @@
   var class$prime2 = /* @__PURE__ */ class$prime(toClassListString);
   var div4 = /* @__PURE__ */ div3(toNodeArray2)(toNodeArray1);
   var class$prime1 = /* @__PURE__ */ class$prime(toClassListClasses);
-  var input2 = /* @__PURE__ */ input(toNodeArray2);
   var button2 = /* @__PURE__ */ button(toNodeArray2)(toNodeArray1);
+  var i$prime2 = /* @__PURE__ */ i$prime(toNodeArray2);
   var label2 = /* @__PURE__ */ label(toNodeArray2)(toNodeArray1);
   var span4 = /* @__PURE__ */ span(toNodeArray2)(toNodeArray1);
   var pure3 = /* @__PURE__ */ pure(applicativeAff);
@@ -3711,7 +3704,7 @@
   var eq12 = /* @__PURE__ */ eq(eqUUIDv4);
   var notEq2 = /* @__PURE__ */ notEq(eqUUIDv4);
   var fromJust4 = /* @__PURE__ */ fromJust();
-  var i$prime2 = /* @__PURE__ */ i$prime(toNodeArray2);
+  var input2 = /* @__PURE__ */ input(toNodeArray2);
   var ul2 = /* @__PURE__ */ ul(toNodeArray2)(/* @__PURE__ */ toNodeArray(toNodeArray1));
   var All = /* @__PURE__ */ function() {
     function All2() {
@@ -3825,7 +3818,7 @@
     return SetFilter2;
   }();
   var viewTodo = function(todo) {
-    return li2([class$prime2("py-4")])([div4([class$prime1(["flex", "items-center"])])([input2([class$prime1(["h-4", "w-4", "text-teal-600", "focus:ring-teal-500", "border-gray-300", "rounded"]), type$prime("checkbox"), checked(todo.completed), onClick(new ToggleCompleted(todo.id))]), button2([class$prime1(["h-8", "w-8", "text-teal-600", "focus:ring-teal-500", "rounded"]), onClick(new DeleteTodo(todo.id))])([text("X")]), label2([class$prime1(["ml-3", "block", "text-gray-900"])])([span4([class$prime1(["text-lg", "font-medium"])])([text(todo.description)])])])]);
+    return li2([class$prime2("py-4")])([div4([class$prime1(["flex", "items-center", "gap-1"])])([button2([class$prime1(["h-4", "w-4", class_if_else("text-gray-600")(todo.completed)("text-green-600"), "border-gray-300", "rounded"]), onClick(new ToggleCompleted(todo.id))])([i$prime2([class$prime2("ai-ribbon")])]), button2([class$prime1(["h-4", "w-4", "text-red-600", "border-gray-300", "rounded"]), onClick(new DeleteTodo(todo.id))])([i$prime2([class$prime2("ai-trash-can")])]), button2([class$prime1(["h-4", "w-4", "text-neutral-600", "border-gray-300", "rounded"]), onClick(new StartEdit(todo.id))])([i$prime2([class$prime2("ai-edit")])]), label2([class$prime1(["ml-3", "block", "text-gray-900"])])([span4([class$prime1(["text-lg", "font-medium", class_if("line-through")(todo.completed)])])([text(todo.description)])])])]);
   };
   var update = function(v) {
     if (v.message instanceof SetNewTodo) {
@@ -3870,8 +3863,8 @@
           newTodo: v.model.newTodo,
           todoBeingEdited: v.model.todoBeingEdited,
           todoList: map7(function(todo) {
-            var $70 = eq12(todo.id)(v.message.value0);
-            if ($70) {
+            var $66 = eq12(todo.id)(v.message.value0);
+            if ($66) {
               return {
                 id: todo.id,
                 description: todo.description,
@@ -3921,8 +3914,8 @@
           filterType: v.model.filterType,
           newTodo: v.model.newTodo,
           todoList: map7(function(todo) {
-            var $74 = eq12(todo.id)(tbe.id);
-            if ($74) {
+            var $70 = eq12(todo.id)(tbe.id);
+            if ($70) {
               return {
                 id: todo.id,
                 completed: todo.completed,
@@ -3939,11 +3932,11 @@
     ;
     if (v.message instanceof StartEdit) {
       var desc = function() {
-        var $91 = map7(function(todo) {
+        var $86 = map7(function(todo) {
           return todo.description;
         });
-        return function($92) {
-          return fromJust4(head($91($92)));
+        return function($87) {
+          return fromJust4(head($86($87)));
         };
       }()(filter(function(todo) {
         return eq12(todo.id)(v.message.value0);
@@ -3966,15 +3959,15 @@
       var todoBeingEdited = fromJust4(head(filter(function(todo) {
         return eq12(todo.id)(v.message.value0);
       })(v.model.todoBeingEdited)));
-      var originalTodo = function($94) {
-        return fromJust4(head($94));
+      var originalTodo = function($89) {
+        return fromJust4(head($89));
       }(filter(function(todo) {
         return eq12(todo.id)(todoBeingEdited.id);
       })(v.model.todoList));
       var changed = v.message.value1 !== originalTodo.description;
       var newTodoBeingEdited = map7(function(t) {
-        var $77 = eq12(t.id)(v.message.value0);
-        if ($77) {
+        var $73 = eq12(t.id)(v.message.value0);
+        if ($73) {
           return {
             id: t.id,
             description: v.message.value1,
@@ -4029,8 +4022,11 @@
       filterType: All.value
     }, Nothing.value);
   };
+  var filterTabs = function(model) {
+    return div4([class$prime1(["flex", "items-center", "justify-center", "space-x-1", "py-2"])])([button2([class$prime1(["bg-teal-500", "hover:bg-teal-700", "border-teal-500", "hover:border-teal-700", "text-white", "text-sm", "border-4", "py-1", "px-2", "rounded", "focus:outline-none", "focus:ring-2", "focus:ring-teal-500"]), onClick(new SetFilter(All.value))])([text("All")]), button2([class$prime1(["bg-teal-500", "hover:bg-teal-700", "border-teal-500", "hover:border-teal-700", "text-white", "text-sm", "border-4", "py-1", "px-2", "rounded", "focus:outline-none", "focus:ring-2", "focus:ring-teal-500"]), onClick(new SetFilter(Active.value))])([text("Active")]), button2([class$prime1(["bg-teal-500", "hover:bg-teal-700", "border-teal-500", "hover:border-teal-700", "text-white", "text-sm", "border-4", "py-1", "px-2", "rounded", "focus:outline-none", "focus:ring-2", "focus:ring-teal-500"]), onClick(new SetFilter(Completed.value))])([text("Completed")])]);
+  };
   var editTodo = function(todo) {
-    return div4([class$prime2("box")])([div4([class$prime2("field"), class$prime2("is-grouped")])([div4([class$prime2("control"), class$prime2("is-expanded")])([input2([class$prime2("input"), class$prime2("is-medium"), value(todo.description), onInput(SetEditDescription.create(todo.id))])]), div4([class$prime2("control"), class$prime2("buttons")])([button2([class$prime2("button"), class$prime2("is-primary"), onClick(new ApplyEdit(todo.id)), disabled(!todo.hasUpdate)])([i$prime2([class$prime2("fa"), class$prime2("fa-save")])]), button2([class$prime2("button"), class$prime2("is-warning"), onClick(new CancelEdit(todo.id))])([i$prime2([class$prime2("fa"), class$prime2("fa-arrow-right")])])])])]);
+    return li2([class$prime2("py-4")])([div4([class$prime1(["flex", "items-center", "gap-1"])])([input2([class$prime1(["h-8", "w-full", "text-teal-600", "focus:ring-teal-500", "border-gray-300", "rounded", "pl-3"]), type$prime("text"), value(todo.description), onInput(SetEditDescription.create(todo.id))]), div4([class$prime1(["ml-3", "flex", "items-center"])])([button2([class$prime1(["h-8", "px-4", "text-sm", "text-white", "bg-teal-600", "rounded", "hover:bg-teal-700", "focus:outline-none", "focus:ring-2", "focus:ring-teal-500"]), onClick(new ApplyEdit(todo.id))])([i$prime2([class$prime2("ai-circle-check")])]), button2([class$prime1(["h-8", "px-4", "ml-2", "text-sm", "text-gray-700", "bg-white", "border", "border-gray-300", "rounded", "hover:bg-gray-100", "focus:outline-none", "focus:ring-2", "focus:ring-teal-500"]), onClick(new CancelEdit(todo.id))])([i$prime2([class$prime2("ai-circle-minus")])])])])]);
   };
   var viewTodoList = function(model) {
     var shouldRenderTodo = function(todo) {
@@ -4046,7 +4042,7 @@
         return todo.completed;
       }
       ;
-      throw new Error("Failed pattern match at Main (line 246, column 29 - line 249, column 34): " + [model.filterType.constructor.name]);
+      throw new Error("Failed pattern match at Main (line 271, column 29 - line 274, column 34): " + [model.filterType.constructor.name]);
     };
     var todos = filter(shouldRenderTodo)(model.todoList);
     var renderTodo = function(todo) {
@@ -4065,13 +4061,13 @@
         return viewTodo(todo);
       }
       ;
-      throw new Error("Failed pattern match at Main (line 242, column 15 - line 244, column 33): " + [v.constructor.name]);
+      throw new Error("Failed pattern match at Main (line 267, column 15 - line 269, column 33): " + [v.constructor.name]);
     };
     return ul2([class$prime1(["divide-y", "divide-gray-200", "px-4"])])([map7(renderTodo)(todos)]);
   };
   var appTitle = /* @__PURE__ */ div4([/* @__PURE__ */ class$prime1(["px-4", "py-2"])])([/* @__PURE__ */ h1(toNodeArray2)(toNodeArray1)([/* @__PURE__ */ class$prime1(["text-gray-800", "font-bold", "text-2xl", "uppercase"])])([/* @__PURE__ */ text("Flame Todo List")])]);
   var view = function(model) {
-    return div4([class$prime1(["max-w-md", "mx-auto", "bg-white", "shadow-lg", "rounded-lg", "overflow-hidden", "mt-16"])])([appTitle, inputField(model), viewTodoList(model)]);
+    return div4([class$prime1(["max-w-md", "mx-auto", "bg-white", "shadow-lg", "rounded-lg", "overflow-hidden", "mt-16"])])([appTitle, inputField(model), filterTabs(model), viewTodoList(model)]);
   };
   var main = function __do2() {
     var init3 = initGen();
