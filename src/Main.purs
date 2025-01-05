@@ -12,9 +12,9 @@ import Flame (Html, QuerySelector(..), Subscription)
 import Flame.Application.Effectful as FAE
 import Flame.Html.Attribute as HA
 import Flame.Html.Element as HE
-import Htmls (Classes(..), class_if, class_if_else)
 import Partial.Unsafe (unsafePartial)
 import Prelude (class Eq, Unit, bind, identity, map, not, otherwise, pure, ($), (/=), (<>), (==), (>>>), (<<<))
+import Tailwindcss
 
 type Todo
   = { description :: String
@@ -143,7 +143,7 @@ update { model, message } = case message of
 
 view :: Model -> Html Msg
 view model =
-  HE.div [ HA.class' $ Classes [ "max-w-md", "mx-auto", "bg-white", "shadow-lg", "rounded-lg", "overflow-hidden", "mt-16" ] ]
+  HE.div [ HA.class' $ cs [ max_w_md, mx_auto, bg_white, shadow_lg, rounded_lg, overflow_hidden, mt_16 ] ]
     [ appTitle
     , inputField model
     , filterTabs model
@@ -153,55 +153,114 @@ view model =
 appTitle :: forall a. Html a
 appTitle =
   HE.div
-    [ HA.class' $ Classes [ "px-4", "py-2" ] ]
-    [ HE.h1 [ HA.class' $ Classes [ "text-gray-800", "font-bold", "text-2xl", "uppercase" ] ]
+    [ HA.class' $ cs [ px_4, py_2 ] ]
+    [ HE.h1 [ HA.class' $ cs [ text_gray_800, font_bold, text_2xl, uppercase ] ]
         [ HE.text "Flame Todo List" ]
     ]
 
 filterTabs :: Model -> Html Msg
 filterTabs model =
-  HE.div [ HA.class' $ Classes [ "flex", "items-center", "justify-center", "space-x-1", "py-2" ] ]
+  HE.div [ HA.class' $ cs [ flex, items_center, justify_center, space_x_1, py_2 ] ]
     [ HE.button
-        [ HA.class' $ Classes [ "bg-teal-500", "hover:bg-teal-700", "border-teal-500", "hover:border-teal-700", "text-white", "text-sm", "border-4", "py-1", "px-2", "rounded", "focus:outline-none", "focus:ring-2", "focus:ring-teal-500" ]
+        [ HA.class'
+            $ cs
+                [ bg_teal_500
+                , hover_bg_teal_700
+                , border_teal_500
+                , hover_border_teal_700
+                , text_white
+                , text_sm
+                , border_4
+                , py_1
+                , px_2
+                , rounded
+                , focus_outline_none
+                , focus_ring_2
+                , focus_ring_teal_500
+                ]
         , HA.onClick (SetFilter All)
         ]
         [ HE.text "All" ]
     , HE.button
-        [ HA.class' $ Classes [ "bg-teal-500", "hover:bg-teal-700", "border-teal-500", "hover:border-teal-700", "text-white", "text-sm", "border-4", "py-1", "px-2", "rounded", "focus:outline-none", "focus:ring-2", "focus:ring-teal-500" ]
+        [ HA.class'
+            $ cs
+                [ bg_teal_500
+                , hover_bg_teal_700
+                , border_teal_500
+                , hover_border_teal_700
+                , text_white
+                , text_sm
+                , border_4
+                , py_1
+                , px_2
+                , rounded
+                , focus_outline_none
+                , focus_ring_2
+                , focus_ring_teal_500
+                ]
         , HA.onClick (SetFilter Active)
         ]
         [ HE.text "Active" ]
     , HE.button
-        [ HA.class' $ Classes [ "bg-teal-500", "hover:bg-teal-700", "border-teal-500", "hover:border-teal-700", "text-white", "text-sm", "border-4", "py-1", "px-2", "rounded", "focus:outline-none", "focus:ring-2", "focus:ring-teal-500" ]
+        [ HA.class'
+            $ cs
+                [ bg_teal_500
+                , hover_bg_teal_700
+                , border_teal_500
+                , hover_border_teal_700
+                , text_white
+                , text_sm
+                , border_4
+                , py_1
+                , px_2
+                , rounded
+                , focus_outline_none
+                , focus_ring_2
+                , focus_ring_teal_500
+                ]
         , HA.onClick (SetFilter Completed)
         ]
         [ HE.text "Completed" ]
     ]
 
-{-
-      [ HE.ul_
-          [ HE.li [ HA.class' (filterClass All) ]
-              [ HE.a [ HA.onClick (SetFilter All) ] [ HE.text "All" ] ]
-          , HE.li [ HA.class' (filterClass Active) ]
-              [ HE.a [ HA.onClick (SetFilter Active) ] [ HE.text "Active" ] ]
-          , HE.li [ HA.class' (filterClass Completed) ]
-              [ HE.a [ HA.onClick (SetFilter Completed) ] [ HE.text "Completed" ] ]
-          ]
-      ]
--}
 inputField :: Model -> Html Msg
 inputField model =
-  HE.div [ HA.class' $ Classes [ "w-full", "max-w-sm", "mx-auto", "px-4", "py-2" ] ]
-    [ HE.div [ HA.class' $ Classes [ "flex", "items-center", "border-b-2", "border-teal-500", "py-2" ] ]
+  HE.div [ HA.class' $ cs [ w_full, max_w_sm, mx_auto, px_4, py_2 ] ]
+    [ HE.div [ HA.class' $ cs [ flex, items_center, border_b_2, border_teal_500, py_2 ] ]
         [ HE.input
-            [ HA.class' $ Classes [ "appearance-none", "bg-transparent", "border-none", "w-full", "text-gray-700", "mr-3", "py-1", "px-2", "leading-tight", "focus:outline-none" ]
+            [ HA.class'
+                $ cs
+                    [ appearance_none
+                    , bg_transparent
+                    , border_none
+                    , w_full
+                    , text_gray_700
+                    , mr_3
+                    , py_1
+                    , px_2
+                    , leading_tight
+                    , focus_outline_none
+                    ]
             , HA.type' "text"
             , HA.placeholder "Add a new todo"
             , HA.value model.newTodo
             , HA.onInput SetNewTodo
             ]
         , HE.button
-            [ HA.class' $ Classes [ "flex-shrink-0", "bg-teal-500", "hover:bg-teal-700", "border-teal-500", "hover:border-teal-700", "text-sm", "border-4", "text-white", "py-1", "px-2", "rounded" ]
+            [ HA.class'
+                $ cs
+                    [ flex_shrink_0
+                    , bg_teal_500
+                    , hover_bg_teal_700
+                    , border_teal_500
+                    , hover_border_teal_700
+                    , text_sm
+                    , border_4
+                    , text_white
+                    , py_1
+                    , px_2
+                    , rounded
+                    ]
             , HA.onClick AddNewTodo
             ]
             [ HE.text "Add" ]
@@ -210,25 +269,25 @@ inputField model =
 
 viewTodo :: Todo -> Html Msg
 viewTodo todo =
-  HE.li [ HA.class' "py-4" ]
-    [ HE.div [ HA.class' $ Classes [ "flex", "items-center", "gap-1" ] ]
+  HE.li [ HA.class' py_4 ]
+    [ HE.div [ HA.class' $ cs [ flex, items_center, gap_1 ] ]
         [ HE.button
-            [ HA.class' $ Classes [ "h-4", "w-4", (class_if_else "text-gray-600" todo.completed "text-green-600"), "border-gray-300", "rounded" ]
+            [ HA.class' $ cs [ h_4, w_4, text_gray_600_ todo.completed, text_green_600_ (not todo.completed), border_gray_300, rounded ]
             , HA.onClick (ToggleCompleted todo.id)
             ]
             [ HE.i' [ HA.class' "ai-ribbon" ] ]
         , HE.button
-            [ HA.class' $ Classes [ "h-4", "w-4", "text-red-600", "border-gray-300", "rounded" ]
+            [ HA.class' $ cs [ h_4, w_4, text_red_600, border_gray_300, rounded ]
             , HA.onClick (DeleteTodo todo.id)
             ]
             [ HE.i' [ HA.class' "ai-trash-can" ] ]
         , HE.button
-            [ HA.class' $ Classes [ "h-4", "w-4", "text-neutral-600", "border-gray-300", "rounded" ]
+            [ HA.class' $ cs [ h_4, w_4, text_neutral_600, border_gray_300, rounded ]
             , HA.onClick (StartEdit todo.id)
             ]
             [ HE.i' [ HA.class' "ai-edit" ] ]
-        , HE.label [ HA.class' $ Classes [ "ml-3", "block", "text-gray-900" ] ]
-            [ HE.span [ HA.class' $ Classes [ "text-lg", "font-medium", (class_if "line-through" todo.completed) ] ]
+        , HE.label [ HA.class' $ cs [ ml_3, block, text_gray_900 ] ]
+            [ HE.span [ HA.class' $ cs [ text_lg, font_medium, line_through_ todo.completed ] ]
                 [ HE.text todo.description ]
             ]
         ]
@@ -236,25 +295,52 @@ viewTodo todo =
 
 editTodo :: TodoBeingEdited -> Html Msg
 editTodo todo =
-  HE.li [ HA.class' "py-4" ]
-    [ HE.div [ HA.class' $ Classes [ "flex", "items-center", "gap-1" ] ]
+  HE.li [ HA.class' py_4 ]
+    [ HE.div [ HA.class' $ cs [ flex, items_center, gap_1 ] ]
         [ HE.input
-            [ HA.class' $ Classes [ "h-8", "w-full", "text-teal-600", "focus:ring-teal-500", "border-gray-300", "rounded", "pl-3" ]
+            [ HA.class' $ cs [ h_8, w_full, text_teal_600, focus_ring_teal_500, border_gray_300, rounded, pl_3 ]
             , HA.type' "text"
             , HA.value todo.description
             , HA.onInput (SetEditDescription todo.id)
             ]
-        , HE.div [ HA.class' $ Classes [ "ml-3", "flex", "items-center" ] ]
+        , HE.div [ HA.class' $ cs [ ml_3, flex, items_center ] ]
             [ HE.button
-                [ HA.class' $ Classes [ "h-8", "px-4", "text-sm", "text-white", "bg-teal-600", "rounded", "hover:bg-teal-700", "focus:outline-none", "focus:ring-2", "focus:ring-teal-500" ]
+                [ HA.class'
+                    $ cs
+                        [ h_8
+                        , px_4
+                        , text_sm
+                        , text_white
+                        , bg_teal_600
+                        , rounded
+                        , hover_bg_teal_700
+                        , focus_outline_none
+                        , focus_ring_2
+                        , focus_ring_teal_500
+                        ]
                 , HA.onClick (ApplyEdit todo.id)
                 ]
-                [ HE.i' [ HA.class' "ai-circle-check" ] ]
+                [ HE.i' [ HA.class' "ai_circle_check" ] ]
             , HE.button
-                [ HA.class' $ Classes [ "h-8", "px-4", "ml-2", "text-sm", "text-gray-700", "bg-white", "border", "border-gray-300", "rounded", "hover:bg-gray-100", "focus:outline-none", "focus:ring-2", "focus:ring-teal-500" ]
+                [ HA.class'
+                    $ cs
+                        [ h_8
+                        , px_4
+                        , ml_2
+                        , text_sm
+                        , text_gray_700
+                        , bg_white
+                        , border
+                        , border_gray_300
+                        , rounded
+                        , hover_bg_gray_100
+                        , focus_outline_none
+                        , focus_ring_2
+                        , focus_ring_teal_500
+                        ]
                 , HA.onClick (CancelEdit todo.id)
                 ]
-                [ HE.i' [ HA.class' "ai-circle-minus" ] ]
+                [ HE.i' [ HA.class' "ai_circle_minus" ] ]
             ]
         ]
     ]
@@ -275,7 +361,7 @@ viewTodoList model =
 
     todos = filter shouldRenderTodo model.todoList
   in
-    HE.ul [ HA.class' $ Classes [ "divide-y", "divide-gray-200", "px-4" ] ]
+    HE.ul [ HA.class' $ cs [ divide_y, divide_gray_200, px_4 ] ]
       [ map renderTodo todos ]
 
 subscribe :: Array (Subscription Msg)
