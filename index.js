@@ -736,14 +736,14 @@
   var foldMapDefaultR = function(dictFoldable) {
     var foldr2 = foldr(dictFoldable);
     return function(dictMonoid) {
-      var append3 = append(dictMonoid.Semigroup0());
-      var mempty2 = mempty(dictMonoid);
+      var append4 = append(dictMonoid.Semigroup0());
+      var mempty3 = mempty(dictMonoid);
       return function(f) {
         return foldr2(function(x) {
           return function(acc) {
-            return append3(f(x))(acc);
+            return append4(f(x))(acc);
           };
-        })(mempty2);
+        })(mempty3);
       };
     };
   };
@@ -753,6 +753,9 @@
     foldMap: function(dictMonoid) {
       return foldMapDefaultR(foldableArray)(dictMonoid);
     }
+  };
+  var foldMap = function(dict) {
+    return dict.foldMap;
   };
 
   // output/Data.Function.Uncurried/foreign.js
@@ -866,6 +869,7 @@
 
   // output/Data.Array/index.js
   var map2 = /* @__PURE__ */ map(functorMaybe);
+  var foldMap1 = /* @__PURE__ */ foldMap(foldableArray);
   var unsafeIndex = function() {
     return runFn2(unsafeIndexImpl);
   };
@@ -879,6 +883,9 @@
   }();
   var head = function(xs) {
     return index(xs)(0);
+  };
+  var foldMap2 = function(dictMonoid) {
+    return foldMap1(dictMonoid);
   };
   var findIndex = /* @__PURE__ */ function() {
     return runFn4(findIndexImpl)(Just.create)(Nothing.value);
@@ -3660,38 +3667,172 @@
   };
   var onClick = /* @__PURE__ */ createEvent("click");
 
-  // output/Htmls/index.js
-  var toClassListClasses = {
-    to: function(v) {
-      return v;
+  // output/Tailwindcss/index.js
+  var append2 = /* @__PURE__ */ append(semigroupArray);
+  var Class = /* @__PURE__ */ function() {
+    function Class2(value0) {
+      this.value0 = value0;
     }
-  };
-  var class_if_else = function(className) {
-    return function(condition) {
-      return function(elseClassName) {
-        if (condition) {
-          return className;
+    ;
+    Class2.create = function(value0) {
+      return new Class2(value0);
+    };
+    return Class2;
+  }();
+  var Classes = /* @__PURE__ */ function() {
+    function Classes2(value0) {
+      this.value0 = value0;
+    }
+    ;
+    Classes2.create = function(value0) {
+      return new Classes2(value0);
+    };
+    return Classes2;
+  }();
+  var semigroupClasses = {
+    append: function(v) {
+      return function(v1) {
+        if (v instanceof Class && v1 instanceof Class) {
+          return new Classes(append2(singleton2(v.value0))(singleton2(v1.value0)));
         }
         ;
-        return elseClassName;
+        if (v instanceof Class && v1 instanceof Classes) {
+          return new Classes(append2(singleton2(v.value0))(v1.value0));
+        }
+        ;
+        if (v instanceof Classes && v1 instanceof Class) {
+          return new Classes(append2(v.value0)(singleton2(v1.value0)));
+        }
+        ;
+        if (v instanceof Classes && v1 instanceof Classes) {
+          return new Classes(append2(v.value0)(v1.value0));
+        }
+        ;
+        throw new Error("Failed pattern match at Tailwindcss (line 11, column 1 - line 15, column 68): " + [v.constructor.name, v1.constructor.name]);
       };
-    };
+    }
   };
-  var class_if = function(className) {
-    return function(condition) {
-      return class_if_else(className)(condition)("");
+  var monoidClasses = /* @__PURE__ */ function() {
+    return {
+      mempty: new Class(""),
+      Semigroup0: function() {
+        return semigroupClasses;
+      }
     };
+  }();
+  var mempty2 = /* @__PURE__ */ mempty(monoidClasses);
+  var cs = /* @__PURE__ */ foldMap2(monoidClasses)(/* @__PURE__ */ identity(categoryFn));
+  var cls = function($24) {
+    return Classes.create(singleton2($24));
   };
+  var divide_gray_200 = /* @__PURE__ */ cls("divide-gray-200");
+  var divide_y = /* @__PURE__ */ cls("divide-y");
+  var flex = /* @__PURE__ */ cls("flex");
+  var flex_shrink_0 = /* @__PURE__ */ cls("flex-shrink-0");
+  var focus_outline_none = /* @__PURE__ */ cls("focus:outline-none");
+  var focus_ring_2 = /* @__PURE__ */ cls("focus:ring-2");
+  var focus_ring_teal_500 = /* @__PURE__ */ cls("focus:ring-teal-500");
+  var font_bold = /* @__PURE__ */ cls("font-bold");
+  var font_medium = /* @__PURE__ */ cls("font-medium");
+  var gap_1 = /* @__PURE__ */ cls("gap-1");
+  var h_4 = /* @__PURE__ */ cls("h-4");
+  var h_8 = /* @__PURE__ */ cls("h-8");
+  var hover_bg_gray_100 = /* @__PURE__ */ cls("hover:bg-gray-100");
+  var hover_bg_teal_700 = /* @__PURE__ */ cls("hover:bg-teal-700");
+  var hover_border_teal_700 = /* @__PURE__ */ cls("hover:border-teal-700");
+  var items_center = /* @__PURE__ */ cls("items-center");
+  var justify_center = /* @__PURE__ */ cls("justify-center");
+  var leading_tight = /* @__PURE__ */ cls("leading-tight");
+  var line_through = /* @__PURE__ */ cls("line-through");
+  var line_through_ = function(cond) {
+    if (cond) {
+      return line_through;
+    }
+    ;
+    return mempty2;
+  };
+  var max_w_md = /* @__PURE__ */ cls("max-w-md");
+  var max_w_sm = /* @__PURE__ */ cls("max-w-sm");
+  var ml_2 = /* @__PURE__ */ cls("ml-2");
+  var ml_3 = /* @__PURE__ */ cls("ml-3");
+  var mr_3 = /* @__PURE__ */ cls("mr-3");
+  var mt_16 = /* @__PURE__ */ cls("mt-16");
+  var mx_auto = /* @__PURE__ */ cls("mx-auto");
+  var overflow_hidden = /* @__PURE__ */ cls("overflow-hidden");
+  var pl_3 = /* @__PURE__ */ cls("pl-3");
+  var px_2 = /* @__PURE__ */ cls("px-2");
+  var px_4 = /* @__PURE__ */ cls("px-4");
+  var py_1 = /* @__PURE__ */ cls("py-1");
+  var py_2 = /* @__PURE__ */ cls("py-2");
+  var py_4 = /* @__PURE__ */ cls("py-4");
+  var rounded = /* @__PURE__ */ cls("rounded");
+  var rounded_lg = /* @__PURE__ */ cls("rounded-lg");
+  var shadow_lg = /* @__PURE__ */ cls("shadow-lg");
+  var space_x_1 = /* @__PURE__ */ cls("space-x-1");
+  var text_2xl = /* @__PURE__ */ cls("text-2xl");
+  var text_gray_600 = /* @__PURE__ */ cls("text-gray-600");
+  var text_gray_600_ = function(cond) {
+    if (cond) {
+      return text_gray_600;
+    }
+    ;
+    return mempty2;
+  };
+  var text_gray_700 = /* @__PURE__ */ cls("text-gray-700");
+  var text_gray_800 = /* @__PURE__ */ cls("text-gray-800");
+  var text_gray_900 = /* @__PURE__ */ cls("text-gray-900");
+  var text_green_600 = /* @__PURE__ */ cls("text-green-600");
+  var text_green_600_ = function(cond) {
+    if (cond) {
+      return text_green_600;
+    }
+    ;
+    return mempty2;
+  };
+  var text_lg = /* @__PURE__ */ cls("text-lg");
+  var text_neutral_600 = /* @__PURE__ */ cls("text-neutral-600");
+  var text_red_600 = /* @__PURE__ */ cls("text-red-600");
+  var text_sm = /* @__PURE__ */ cls("text-sm");
+  var text_teal_600 = /* @__PURE__ */ cls("text-teal-600");
+  var text_white = /* @__PURE__ */ cls("text-white");
+  var uppercase = /* @__PURE__ */ cls("uppercase");
+  var w_4 = /* @__PURE__ */ cls("w-4");
+  var w_full = /* @__PURE__ */ cls("w-full");
+  var classToClassListInstance = {
+    to: function(v) {
+      if (v instanceof Class) {
+        return singleton2(v.value0);
+      }
+      ;
+      if (v instanceof Classes) {
+        return v.value0;
+      }
+      ;
+      throw new Error("Failed pattern match at Tailwindcss (line 20, column 1 - line 22, column 27): " + [v.constructor.name]);
+    }
+  };
+  var border_teal_500 = /* @__PURE__ */ cls("border-teal-500");
+  var border_none = /* @__PURE__ */ cls("border-none");
+  var border_gray_300 = /* @__PURE__ */ cls("border-gray-300");
+  var border_b_2 = /* @__PURE__ */ cls("border-b-2");
+  var border_4 = /* @__PURE__ */ cls("border-4");
+  var border = /* @__PURE__ */ cls("border");
+  var block = /* @__PURE__ */ cls("block");
+  var bg_white = /* @__PURE__ */ cls("bg-white");
+  var bg_transparent = /* @__PURE__ */ cls("bg-transparent");
+  var bg_teal_600 = /* @__PURE__ */ cls("bg-teal-600");
+  var bg_teal_500 = /* @__PURE__ */ cls("bg-teal-500");
+  var appearance_none = /* @__PURE__ */ cls("appearance-none");
 
   // output/Main/index.js
   var toNodeArray2 = /* @__PURE__ */ toNodeArray(toNodeNodeDataNodeData);
   var toNodeArray1 = /* @__PURE__ */ toNodeArray(toNodeHtmlHtml);
   var li2 = /* @__PURE__ */ li(toNodeArray2)(toNodeArray1);
-  var class$prime2 = /* @__PURE__ */ class$prime(toClassListString);
+  var class$prime2 = /* @__PURE__ */ class$prime(classToClassListInstance);
   var div4 = /* @__PURE__ */ div3(toNodeArray2)(toNodeArray1);
-  var class$prime1 = /* @__PURE__ */ class$prime(toClassListClasses);
   var button2 = /* @__PURE__ */ button(toNodeArray2)(toNodeArray1);
   var i$prime2 = /* @__PURE__ */ i$prime(toNodeArray2);
+  var class$prime1 = /* @__PURE__ */ class$prime(toClassListString);
   var label2 = /* @__PURE__ */ label(toNodeArray2)(toNodeArray1);
   var span4 = /* @__PURE__ */ span(toNodeArray2)(toNodeArray1);
   var pure3 = /* @__PURE__ */ pure(applicativeAff);
@@ -3699,7 +3840,7 @@
   var bind2 = /* @__PURE__ */ bind(bindAff);
   var liftEffect4 = /* @__PURE__ */ liftEffect(monadEffectAff);
   var make2 = /* @__PURE__ */ make(monadEffectEffect);
-  var append2 = /* @__PURE__ */ append(semigroupArray);
+  var append3 = /* @__PURE__ */ append(semigroupArray);
   var map7 = /* @__PURE__ */ map(functorArray);
   var eq12 = /* @__PURE__ */ eq(eqUUIDv4);
   var notEq2 = /* @__PURE__ */ notEq(eqUUIDv4);
@@ -3818,7 +3959,7 @@
     return SetFilter2;
   }();
   var viewTodo = function(todo) {
-    return li2([class$prime2("py-4")])([div4([class$prime1(["flex", "items-center", "gap-1"])])([button2([class$prime1(["h-4", "w-4", class_if_else("text-gray-600")(todo.completed)("text-green-600"), "border-gray-300", "rounded"]), onClick(new ToggleCompleted(todo.id))])([i$prime2([class$prime2("ai-ribbon")])]), button2([class$prime1(["h-4", "w-4", "text-red-600", "border-gray-300", "rounded"]), onClick(new DeleteTodo(todo.id))])([i$prime2([class$prime2("ai-trash-can")])]), button2([class$prime1(["h-4", "w-4", "text-neutral-600", "border-gray-300", "rounded"]), onClick(new StartEdit(todo.id))])([i$prime2([class$prime2("ai-edit")])]), label2([class$prime1(["ml-3", "block", "text-gray-900"])])([span4([class$prime1(["text-lg", "font-medium", class_if("line-through")(todo.completed)])])([text(todo.description)])])])]);
+    return li2([class$prime2(py_4)])([div4([class$prime2(cs([flex, items_center, gap_1]))])([button2([class$prime2(cs([h_4, w_4, text_gray_600_(todo.completed), text_green_600_(!todo.completed), border_gray_300, rounded])), onClick(new ToggleCompleted(todo.id))])([i$prime2([class$prime1("ai-ribbon")])]), button2([class$prime2(cs([h_4, w_4, text_red_600, border_gray_300, rounded])), onClick(new DeleteTodo(todo.id))])([i$prime2([class$prime1("ai-trash-can")])]), button2([class$prime2(cs([h_4, w_4, text_neutral_600, border_gray_300, rounded])), onClick(new StartEdit(todo.id))])([i$prime2([class$prime1("ai-edit")])]), label2([class$prime2(cs([ml_3, block, text_gray_900]))])([span4([class$prime2(cs([text_lg, font_medium, line_through_(todo.completed)]))])([text(todo.description)])])])]);
   };
   var update = function(v) {
     if (v.message instanceof SetNewTodo) {
@@ -3844,7 +3985,7 @@
               filterType: v.model.filterType,
               todoBeingEdited: v.model.todoBeingEdited,
               newTodo: "",
-              todoList: append2(v.model.todoList)([{
+              todoList: append3(v.model.todoList)([{
                 id: newTodoId,
                 description: v.model.newTodo,
                 completed: false
@@ -3946,7 +4087,7 @@
           filterType: v.model.filterType,
           newTodo: v.model.newTodo,
           todoList: v.model.todoList,
-          todoBeingEdited: append2([{
+          todoBeingEdited: append3([{
             id: v.message.value0,
             description: desc,
             hasUpdate: false
@@ -4002,7 +4143,7 @@
   };
   var subscribe = [];
   var inputField = function(model) {
-    return div4([class$prime1(["w-full", "max-w-sm", "mx-auto", "px-4", "py-2"])])([div4([class$prime1(["flex", "items-center", "border-b-2", "border-teal-500", "py-2"])])([input2([class$prime1(["appearance-none", "bg-transparent", "border-none", "w-full", "text-gray-700", "mr-3", "py-1", "px-2", "leading-tight", "focus:outline-none"]), type$prime("text"), placeholder("Add a new todo"), value(model.newTodo), onInput(SetNewTodo.create)]), button2([class$prime1(["flex-shrink-0", "bg-teal-500", "hover:bg-teal-700", "border-teal-500", "hover:border-teal-700", "text-sm", "border-4", "text-white", "py-1", "px-2", "rounded"]), onClick(AddNewTodo.value)])([text("Add")])])]);
+    return div4([class$prime2(cs([w_full, max_w_sm, mx_auto, px_4, py_2]))])([div4([class$prime2(cs([flex, items_center, border_b_2, border_teal_500, py_2]))])([input2([class$prime2(cs([appearance_none, bg_transparent, border_none, w_full, text_gray_700, mr_3, py_1, px_2, leading_tight, focus_outline_none])), type$prime("text"), placeholder("Add a new todo"), value(model.newTodo), onInput(SetNewTodo.create)]), button2([class$prime2(cs([flex_shrink_0, bg_teal_500, hover_bg_teal_700, border_teal_500, hover_border_teal_700, text_sm, border_4, text_white, py_1, px_2, rounded])), onClick(AddNewTodo.value)])([text("Add")])])]);
   };
   var initGen = function __do() {
     var uuid01 = make2();
@@ -4023,10 +4164,10 @@
     }, Nothing.value);
   };
   var filterTabs = function(model) {
-    return div4([class$prime1(["flex", "items-center", "justify-center", "space-x-1", "py-2"])])([button2([class$prime1(["bg-teal-500", "hover:bg-teal-700", "border-teal-500", "hover:border-teal-700", "text-white", "text-sm", "border-4", "py-1", "px-2", "rounded", "focus:outline-none", "focus:ring-2", "focus:ring-teal-500"]), onClick(new SetFilter(All.value))])([text("All")]), button2([class$prime1(["bg-teal-500", "hover:bg-teal-700", "border-teal-500", "hover:border-teal-700", "text-white", "text-sm", "border-4", "py-1", "px-2", "rounded", "focus:outline-none", "focus:ring-2", "focus:ring-teal-500"]), onClick(new SetFilter(Active.value))])([text("Active")]), button2([class$prime1(["bg-teal-500", "hover:bg-teal-700", "border-teal-500", "hover:border-teal-700", "text-white", "text-sm", "border-4", "py-1", "px-2", "rounded", "focus:outline-none", "focus:ring-2", "focus:ring-teal-500"]), onClick(new SetFilter(Completed.value))])([text("Completed")])]);
+    return div4([class$prime2(cs([flex, items_center, justify_center, space_x_1, py_2]))])([button2([class$prime2(cs([bg_teal_500, hover_bg_teal_700, border_teal_500, hover_border_teal_700, text_white, text_sm, border_4, py_1, px_2, rounded, focus_outline_none, focus_ring_2, focus_ring_teal_500])), onClick(new SetFilter(All.value))])([text("All")]), button2([class$prime2(cs([bg_teal_500, hover_bg_teal_700, border_teal_500, hover_border_teal_700, text_white, text_sm, border_4, py_1, px_2, rounded, focus_outline_none, focus_ring_2, focus_ring_teal_500])), onClick(new SetFilter(Active.value))])([text("Active")]), button2([class$prime2(cs([bg_teal_500, hover_bg_teal_700, border_teal_500, hover_border_teal_700, text_white, text_sm, border_4, py_1, px_2, rounded, focus_outline_none, focus_ring_2, focus_ring_teal_500])), onClick(new SetFilter(Completed.value))])([text("Completed")])]);
   };
   var editTodo = function(todo) {
-    return li2([class$prime2("py-4")])([div4([class$prime1(["flex", "items-center", "gap-1"])])([input2([class$prime1(["h-8", "w-full", "text-teal-600", "focus:ring-teal-500", "border-gray-300", "rounded", "pl-3"]), type$prime("text"), value(todo.description), onInput(SetEditDescription.create(todo.id))]), div4([class$prime1(["ml-3", "flex", "items-center"])])([button2([class$prime1(["h-8", "px-4", "text-sm", "text-white", "bg-teal-600", "rounded", "hover:bg-teal-700", "focus:outline-none", "focus:ring-2", "focus:ring-teal-500"]), onClick(new ApplyEdit(todo.id))])([i$prime2([class$prime2("ai-circle-check")])]), button2([class$prime1(["h-8", "px-4", "ml-2", "text-sm", "text-gray-700", "bg-white", "border", "border-gray-300", "rounded", "hover:bg-gray-100", "focus:outline-none", "focus:ring-2", "focus:ring-teal-500"]), onClick(new CancelEdit(todo.id))])([i$prime2([class$prime2("ai-circle-minus")])])])])]);
+    return li2([class$prime2(py_4)])([div4([class$prime2(cs([flex, items_center, gap_1]))])([input2([class$prime2(cs([h_8, w_full, text_teal_600, focus_ring_teal_500, border_gray_300, rounded, pl_3])), type$prime("text"), value(todo.description), onInput(SetEditDescription.create(todo.id))]), div4([class$prime2(cs([ml_3, flex, items_center]))])([button2([class$prime2(cs([h_8, px_4, text_sm, text_white, bg_teal_600, rounded, hover_bg_teal_700, focus_outline_none, focus_ring_2, focus_ring_teal_500])), onClick(new ApplyEdit(todo.id))])([i$prime2([class$prime1("ai_circle_check")])]), button2([class$prime2(cs([h_8, px_4, ml_2, text_sm, text_gray_700, bg_white, border, border_gray_300, rounded, hover_bg_gray_100, focus_outline_none, focus_ring_2, focus_ring_teal_500])), onClick(new CancelEdit(todo.id))])([i$prime2([class$prime1("ai_circle_minus")])])])])]);
   };
   var viewTodoList = function(model) {
     var shouldRenderTodo = function(todo) {
@@ -4042,7 +4183,7 @@
         return todo.completed;
       }
       ;
-      throw new Error("Failed pattern match at Main (line 271, column 29 - line 274, column 34): " + [model.filterType.constructor.name]);
+      throw new Error("Failed pattern match at Main (line 357, column 29 - line 360, column 34): " + [model.filterType.constructor.name]);
     };
     var todos = filter(shouldRenderTodo)(model.todoList);
     var renderTodo = function(todo) {
@@ -4061,13 +4202,13 @@
         return viewTodo(todo);
       }
       ;
-      throw new Error("Failed pattern match at Main (line 267, column 15 - line 269, column 33): " + [v.constructor.name]);
+      throw new Error("Failed pattern match at Main (line 353, column 15 - line 355, column 33): " + [v.constructor.name]);
     };
-    return ul2([class$prime1(["divide-y", "divide-gray-200", "px-4"])])([map7(renderTodo)(todos)]);
+    return ul2([class$prime2(cs([divide_y, divide_gray_200, px_4]))])([map7(renderTodo)(todos)]);
   };
-  var appTitle = /* @__PURE__ */ div4([/* @__PURE__ */ class$prime1(["px-4", "py-2"])])([/* @__PURE__ */ h1(toNodeArray2)(toNodeArray1)([/* @__PURE__ */ class$prime1(["text-gray-800", "font-bold", "text-2xl", "uppercase"])])([/* @__PURE__ */ text("Flame Todo List")])]);
+  var appTitle = /* @__PURE__ */ div4([/* @__PURE__ */ class$prime2(/* @__PURE__ */ cs([px_4, py_2]))])([/* @__PURE__ */ h1(toNodeArray2)(toNodeArray1)([/* @__PURE__ */ class$prime2(/* @__PURE__ */ cs([text_gray_800, font_bold, text_2xl, uppercase]))])([/* @__PURE__ */ text("Flame Todo List")])]);
   var view = function(model) {
-    return div4([class$prime1(["max-w-md", "mx-auto", "bg-white", "shadow-lg", "rounded-lg", "overflow-hidden", "mt-16"])])([appTitle, inputField(model), filterTabs(model), viewTodoList(model)]);
+    return div4([class$prime2(cs([max_w_md, mx_auto, bg_white, shadow_lg, rounded_lg, overflow_hidden, mt_16]))])([appTitle, inputField(model), filterTabs(model), viewTodoList(model)]);
   };
   var main = function __do2() {
     var init3 = initGen();

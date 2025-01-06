@@ -22,6 +22,6 @@ to generate this file without the comments in this block.
   , "tuples"
   , "uuidv4"
   ]
-, packages = ../packages.dhall
+, packages = ./packages.dhall
 , sources = [ "src/**/*.purs", "test/**/*.purs" ]
 }
